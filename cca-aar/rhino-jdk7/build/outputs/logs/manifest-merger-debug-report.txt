@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml:2:1-4:12
+INJECTED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml:2:1-4:12
+	package
+		INJECTED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml:2:11-69
+uses-sdk
+INJECTED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml
+INJECTED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/huangchao/Work/GitHub/auto-js/cca-aar/rhino-jdk7/src/main/AndroidManifest.xml

@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace "net.cc.cca.tool.colorcenter"
     compileSdkVersion versions.compile
-    buildToolsVersion versions.buildTool
 
     defaultConfig {
         minSdkVersion versions.mini

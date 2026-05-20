@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel>
-      <module name="auto-js.apkbuilder" target="1.8" />
-      <module name="auto-js.app" target="1.8" />
-      <module name="auto-js.automator" target="1.8" />
-      <module name="auto-js.cca" target="1.8" />
-      <module name="auto-js.common" target="1.8" />
-      <module name="auto-js.inrt" target="1.8" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="17" />
   </component>
 </project>

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace "net.cc.cca.tool.webview"
     compileSdkVersion versions.compile
 
     defaultConfig {

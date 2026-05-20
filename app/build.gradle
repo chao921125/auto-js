@@ -39,7 +39,6 @@ android {
         }
     }
     compileSdkVersion versions.compile
-    buildToolsVersion versions.buildTool
     defaultConfig {
         applicationId "net.cc.cca"
         minSdkVersion versions.mini
@@ -63,7 +62,7 @@ android {
         debug {
             shrinkResources false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
             applicationIdSuffix ".debug"
         }
@@ -71,14 +70,14 @@ android {
             debuggable false
             shrinkResources false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".modify"
-        }
-        if (signSupport) {
-            println('sign support')
-            release.signingConfig = signingConfigs.release
-        } else {
-            println('sign is not support')
+            if (signSupport) {
+                println('sign support')
+                signingConfig signingConfigs.release
+            } else {
+                println('sign is not support')
+            }
         }
     }
     compileOptions {
@@ -160,7 +159,7 @@ dependencies {
     })
     testImplementation "junit:junit:$junit_version"
     // Kotlin
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     // Android Annotations
     kapt "org.androidannotations:androidannotations:$AAVersion"
     implementation "org.androidannotations:androidannotations-api:$AAVersion"
@@ -175,7 +174,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "com.google.android.material:material:$material_version"
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.activity:activity-ktx:1.4.0'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
     // old version support
     implementation "com.android.support:appcompat-v7:${SupportLibVersion}"
     implementation "com.android.support:support-v4:${SupportLibVersion}"

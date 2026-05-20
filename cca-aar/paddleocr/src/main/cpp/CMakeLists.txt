@@ -3,7 +3,7 @@
 
 # Sets the minimum version of CMake required to build the native library.
 
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 # Creates and names a library, sets it as either STATIC or SHARED, and provides
 # the relative paths to its source code. You can define multiple libraries, and
@@ -25,11 +25,12 @@ set(CMAKE_CXX_FLAGS
 set(CMAKE_CXX_FLAGS
         "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -fdata-sections -ffunction-sections"
         )
+# Allow local symbols in global part for compatibility with PaddleLite
 set(CMAKE_SHARED_LINKER_FLAGS
-        "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,-z,nocopyreloc")
+        "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,-z,nocopyreloc -Wl,--permissive"
+        )
 
-add_library(
-        # Sets the name of the library.
+add_library(        # Sets the name of the library.
         Native
         # Sets the library as a shared library.
         SHARED
@@ -58,6 +59,12 @@ set_target_properties(
         IMPORTED_LOCATION
         ${PaddleLite_DIR}/cxx/libs/${ANDROID_ABI}/libpaddle_light_api_shared.so
         # Provides the path to the library you want to import.
+)
+
+# Linker options to handle PaddleLite symbol issues
+target_link_options(Native PRIVATE
+        "-Wl,--allow-shlib-undefined"
+        "-Wl,--fix-cortex-a8"
 )
 
 

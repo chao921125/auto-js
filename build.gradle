@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.9.22'
+    ext.kotlin_version = '2.2.10'
     repositories {
         mavenCentral()
         google()
@@ -13,7 +13,7 @@ buildscript {
         maven { url "https://maven.aliyun.com/repository/public" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'com.android.tools.build:gradle:9.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
         classpath 'org.codehaus.groovy:groovy-json:3.0.8'
@@ -40,6 +40,7 @@ task clean(type: Delete) {
 ext {
     versions = new JsonSlurper().parse(file('./project-versions.json'))
     ext.junit_version = '4.13.2'
-    ext.appcompat_version = '1.6.1'
-    ext.material_version = '1.11.0'
+    ext.appcompat_version = '1.7.0'
+    ext.material_version = '1.12.0'
+    ext.coroutines_version = '1.9.0'
 }

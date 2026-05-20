@@ -5,7 +5,6 @@ apply plugin: 'kotlin-kapt'
 android {
     namespace "net.cc.cca.core"
     compileSdkVersion versions.compile
-    buildToolsVersion versions.buildTool
 
     defaultConfig {
         minSdkVersion versions.mini
@@ -17,7 +16,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 

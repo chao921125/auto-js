@@ -12,7 +12,6 @@ def signSupport = false
 android {
     namespace "net.cc.stardust.inrt"
     compileSdkVersion versions.compile
-    buildToolsVersion versions.buildTool
 
     signingConfigs {
         if (file(homePath + '/auto-js-t-pkcs12.jks').exists()) {
@@ -62,11 +61,11 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         if (signSupport) {
             println('sign support')
