@@ -1,0 +1,6 @@
+/build
+cache/
+OpenCV/
+PaddleLiteArmv7/
+PaddleLiteArmv8/
+.cxx/

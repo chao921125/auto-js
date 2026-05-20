@@ -1,0 +1,167 @@
+package net.cc.stardust.core.ui.xml;
+
+import android.os.Build;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
+import android.widget.SeekBar;
+import android.widget.TimePicker;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import net.cc.stardust.core.graphics.ScriptCanvasView;
+import net.cc.stardust.core.ui.widget.JsButton;
+import net.cc.stardust.core.ui.widget.JsEditText;
+import net.cc.stardust.core.ui.widget.JsFrameLayout;
+import net.cc.stardust.core.ui.widget.JsGridView;
+import net.cc.stardust.core.ui.widget.JsImageView;
+import net.cc.stardust.core.ui.widget.JsLinearLayout;
+import net.cc.stardust.core.ui.widget.JsListView;
+import net.cc.stardust.core.ui.widget.JsRelativeLayout;
+import net.cc.stardust.core.ui.widget.JsSpinner;
+import net.cc.stardust.core.ui.widget.JsTabLayout;
+import net.cc.stardust.core.ui.widget.JsTextView;
+import net.cc.stardust.core.ui.widget.JsTextViewOld;
+import net.cc.stardust.core.ui.widget.JsToolbar;
+import net.cc.stardust.core.ui.widget.JsViewPager;
+import net.cc.stardust.core.ui.widget.JsWebView;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import androidx.cardview.widget.CardView;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+/**
+ * Created by Stardust on 2017/5/14.
+ */
+
+public class XmlConverter {
+
+    private static final NodeHandler NODE_HANDLER = new NodeHandler.NameRouter()
+            .handler("vertical", new NodeHandler.VerticalHandler(JsLinearLayout.class.getName()))
+            .defaultHandler(new NodeHandler.MapNameHandler()
+                    .map("frame", JsFrameLayout.class.getName())
+                    .map("linear", JsLinearLayout.class.getName())
+                    .map("horizontal", JsLinearLayout.class.getName())
+                    .map("relative", JsRelativeLayout.class.getName())
+                    .map("button", JsButton.class.getName())
+                    .map("text", Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? JsTextView.class.getName() : JsTextViewOld.class.getName())
+                    .map("input", JsEditText.class.getName())
+                    .map("img", JsImageView.class.getName())
+                    .map("datepicker", DatePicker.class.getName())
+                    .map("timepicker", TimePicker.class.getName())
+                    .map("webview", JsWebView.class.getName())
+                    .map("progressbar", ProgressBar.class.getName())
+                    .map("seekbar", SeekBar.class.getName())
+                    .map("spinner", JsSpinner.class.getName())
+                    .map("radio", RadioButton.class.getName())
+                    .map("radiogroup", RadioGroup.class.getName())
+                    .map("checkbox", CheckBox.class.getName())
+                    .map("scroll", ScrollView.class.getName())
+                    .map("toolbar", JsToolbar.class.getName())
+                    .map("canvas", ScriptCanvasView.class.getName())
+                    .map("list", JsListView.class.getName())
+                    .map("grid", JsGridView.class.getName())
+                    .map("drawer", DrawerLayout.class.getName())
+                    .map("appbar", AppBarLayout.class.getName())
+                    .map("tabs", JsTabLayout.class.getName())
+                    .map("viewpager", JsViewPager.class.getName())
+                    .map("card", CardView.class.getName())
+                    .map("fab", FloatingActionButton.class.getName())
+            );
+
+    private static final AttributeHandler ATTRIBUTE_HANDLER = new AttributeHandler.AttrNameRouter()
+            .handler("w", new AttributeHandler.DimenHandler("width"))
+            .handler("h", new AttributeHandler.DimenHandler("height"))
+            .handler("size", new AttributeHandler.DimenHandler("textSize"))
+            .handler("id", new AttributeHandler.IdHandler())
+            .handler("vertical", new AttributeHandler.OrientationHandler())
+            .handler("margin", new AttributeHandler.DimenHandler("layout_margin"))
+            .handler("padding", new AttributeHandler.DimenHandler("padding"))
+            .handler("marginLeft", new AttributeHandler.DimenHandler("layout_marginLeft"))
+            .handler("marginRight", new AttributeHandler.DimenHandler("layout_marginRight"))
+            .handler("marginTop", new AttributeHandler.DimenHandler("layout_marginTop"))
+            .handler("marginBottom", new AttributeHandler.DimenHandler("layout_marginBottom"))
+            .handler("paddingLeft", new AttributeHandler.DimenHandler("paddingLeft"))
+            .handler("paddingRight", new AttributeHandler.DimenHandler("paddingRight"))
+            .handler("paddingTop", new AttributeHandler.DimenHandler("paddingTop"))
+            .handler("paddingBottom", new AttributeHandler.DimenHandler("paddingBottom"))
+            .defaultHandler(new AttributeHandler.MappedAttributeHandler()
+                    .mapName("align", "layout_gravity")
+            );
+
+    public static String convertToAndroidLayout(String xml) throws IOException, SAXException, ParserConfigurationException {
+        return convertToAndroidLayout(new InputSource(new StringReader(xml)));
+    }
+
+    public static String convertToAndroidLayout(InputSource source) throws ParserConfigurationException, IOException, SAXException {
+        StringBuilder layoutXml = new StringBuilder();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(source);
+        handleNode(document.getFirstChild(), "xmlns:android=\"http://schemas.android.com/apk/res/android\"", layoutXml);
+        return layoutXml.toString();
+    }
+
+    private static void handleNode(Node node, String namespace, StringBuilder layoutXml) {
+        String nodeName = node.getNodeName();
+        String mappedNodeName = NODE_HANDLER.handleNode(node, namespace, layoutXml);
+        handleText(nodeName, node.getTextContent(), layoutXml);
+        handleAttributes(nodeName, node.getAttributes(), layoutXml);
+        layoutXml.append(">\n");
+        handleChildren(node.getChildNodes(), layoutXml);
+        layoutXml.append("</").append(mappedNodeName).append(">\n");
+    }
+
+    private static void handleText(String nodeName, String textContent, StringBuilder layoutXml) {
+        if (textContent == null || textContent.isEmpty()) {
+            return;
+        }
+        if (nodeName.equals("text") || nodeName.equals("button") || nodeName.equals("input"))
+            layoutXml.append("android:text=\"").append(textContent).append("\"\n");
+    }
+
+    private static void handleChildren(NodeList nodes, StringBuilder layoutXml) {
+        if (nodes == null)
+            return;
+        int len = nodes.getLength();
+        for (int i = 0; i < len; i++) {
+            Node node = nodes.item(i);
+            if (node.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+            handleNode(node, "", layoutXml);
+        }
+    }
+
+
+    private static void handleAttributes(String nodeName, NamedNodeMap attributes, StringBuilder layoutXml) {
+        if (attributes == null)
+            return;
+        int len = attributes.getLength();
+        for (int i = 0; i < len; i++) {
+            Node attr = attributes.item(i);
+            handleAttribute(nodeName, attr, layoutXml);
+        }
+    }
+
+    private static void handleAttribute(String nodeName, Node attr, StringBuilder layoutXml) {
+        ATTRIBUTE_HANDLER.handle(nodeName, attr, layoutXml);
+    }
+
+
+}

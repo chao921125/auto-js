@@ -6,10 +6,15 @@
 /.idea/libraries
 /.idea/caches
 .DS_Store
-/build
+/*/build/
+/autojs-aar/*/build/
 /release
 /captures
 .externalNativeBuild
 *.apk
 *.exe
 .idea/caches/build_file_checksums.ser
+.idea/
+*.log
+.settings/
+.vscode/

@@ -1,0 +1,553 @@
+package net.cc.stardust.runtime;
+
+import android.content.Context;
+import android.os.Build;
+import android.os.Looper;
+import android.util.Log;
+
+import com.stardust.app.GlobalAppContext;
+import net.cc.stardust.R;
+import net.cc.stardust.ScriptEngineService;
+import net.cc.stardust.annotation.ScriptVariable;
+import net.cc.stardust.core.accessibility.AccessibilityBridge;
+import net.cc.stardust.core.accessibility.SimpleActionAutomator;
+import net.cc.stardust.core.accessibility.UiSelector;
+import net.cc.stardust.core.activity.ActivityInfoProvider;
+import net.cc.stardust.core.image.Colors;
+import net.cc.stardust.core.image.capture.ScreenCaptureRequester;
+import net.cc.stardust.core.looper.Loopers;
+import net.cc.stardust.core.permission.Permissions;
+import net.cc.stardust.core.util.ProcessShell;
+import net.cc.stardust.rhino.AndroidClassLoader;
+import net.cc.stardust.rhino.TopLevelScope;
+import net.cc.stardust.rhino.continuation.Continuation;
+import net.cc.stardust.runtime.api.AbstractShell;
+import net.cc.stardust.runtime.api.AppUtils;
+import net.cc.stardust.runtime.api.Console;
+import net.cc.stardust.runtime.api.Device;
+import net.cc.stardust.runtime.api.Dialogs;
+import net.cc.stardust.runtime.api.Engines;
+import net.cc.stardust.runtime.api.Events;
+import net.cc.stardust.runtime.api.Files;
+import net.cc.stardust.runtime.api.Floaty;
+import net.cc.stardust.runtime.api.Images;
+import net.cc.stardust.runtime.api.Media;
+import net.cc.stardust.runtime.api.MlKitOCR;
+import net.cc.stardust.runtime.api.OCR;
+import net.cc.stardust.runtime.api.Plugins;
+import net.cc.stardust.runtime.api.Sensors;
+import net.cc.stardust.runtime.api.Threads;
+import net.cc.stardust.runtime.api.Timers;
+import net.cc.stardust.runtime.api.UI;
+import net.cc.stardust.runtime.api.Yolo;
+import net.cc.stardust.runtime.exception.ScriptEnvironmentException;
+import net.cc.stardust.runtime.exception.ScriptException;
+import net.cc.stardust.runtime.exception.ScriptInterruptedException;
+import net.cc.stardust.shizuku.WrappedShizuku;
+import com.stardust.concurrent.VolatileDispose;
+import com.stardust.lang.ThreadCompat;
+import com.stardust.pio.UncheckedIOException;
+import com.stardust.util.ClipboardUtil;
+import com.stardust.util.ScreenMetrics;
+import com.stardust.util.SdkVersionUtil;
+import com.stardust.util.Supplier;
+import com.stardust.util.UiHandler;
+
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.ScriptStackElement;
+import org.mozilla.javascript.Scriptable;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+
+/**
+ * Created by Stardust on 2017/1/27.
+ */
+
+public class ScriptRuntime {
+
+    private static final String TAG = "ScriptRuntime";
+
+
+    public static class Builder {
+        private UiHandler mUiHandler;
+        private Console mConsole;
+        private AccessibilityBridge mAccessibilityBridge;
+        private Supplier<AbstractShell> mShellSupplier;
+        private ScreenCaptureRequester mScreenCaptureRequester;
+        private AppUtils mAppUtils;
+        private ScriptEngineService mEngineService;
+
+        public Builder() {
+
+        }
+
+        public Builder setUiHandler(UiHandler uiHandler) {
+            mUiHandler = uiHandler;
+            return this;
+        }
+
+        public Builder setConsole(Console console) {
+            mConsole = console;
+            return this;
+        }
+
+        public Builder setAccessibilityBridge(AccessibilityBridge accessibilityBridge) {
+            mAccessibilityBridge = accessibilityBridge;
+            return this;
+        }
+
+        public Builder setShellSupplier(Supplier<AbstractShell> shellSupplier) {
+            mShellSupplier = shellSupplier;
+            return this;
+        }
+
+        public Builder setScreenCaptureRequester(ScreenCaptureRequester requester) {
+            mScreenCaptureRequester = requester;
+            return this;
+        }
+
+        public Builder setAppUtils(AppUtils appUtils) {
+            mAppUtils = appUtils;
+            return this;
+        }
+
+        public Builder setEngineService(ScriptEngineService service) {
+            mEngineService = service;
+            return this;
+        }
+
+
+        public ScriptRuntime build() {
+            return new ScriptRuntime(this);
+        }
+
+    }
+
+
+    @ScriptVariable
+    public final AppUtils app;
+
+    @ScriptVariable
+    public final Console console;
+
+    @ScriptVariable
+    public final SimpleActionAutomator automator;
+
+    @ScriptVariable
+    public final ActivityInfoProvider info;
+
+    @ScriptVariable
+    public final UI ui;
+
+    @ScriptVariable
+    public final Dialogs dialogs;
+
+    @ScriptVariable
+    public Events events;
+
+    @ScriptVariable
+    public final ScriptBridges bridges = new ScriptBridges();
+
+    @ScriptVariable
+    public Loopers loopers;
+
+    @ScriptVariable
+    public Timers timers;
+
+    @ScriptVariable
+    public Device device;
+
+    @ScriptVariable
+    public final AccessibilityBridge accessibilityBridge;
+
+    @ScriptVariable
+    public final Engines engines;
+
+    @ScriptVariable
+    public Threads threads;
+
+    @ScriptVariable
+    public final Floaty floaty;
+
+    @ScriptVariable
+    public UiHandler uiHandler;
+
+    @ScriptVariable
+    public final Colors colors = new Colors();
+
+    @ScriptVariable
+    public final Files files;
+
+    @ScriptVariable
+    public Sensors sensors;
+
+    @ScriptVariable
+    public final Media media;
+
+    @ScriptVariable
+    public final Plugins plugins;
+
+    @ScriptVariable
+    public OCR ocr;
+
+    @ScriptVariable
+    public MlKitOCR mlKitOCR;
+
+    @ScriptVariable
+    public WrappedShizuku shizuku;
+
+    @ScriptVariable
+    public Yolo yolo;
+
+    private Images images;
+
+    private static WeakReference<Context> applicationContext;
+    private Map<String, Object> mProperties = new ConcurrentHashMap<>();
+    private AbstractShell mRootShell;
+    private Supplier<AbstractShell> mShellSupplier;
+    private ScreenMetrics mScreenMetrics = new ScreenMetrics();
+    private Thread mThread;
+    private WeakReference<TopLevelScope> mTopLevelScope;
+    private boolean stop = false;
+
+
+    protected ScriptRuntime(Builder builder) {
+        uiHandler = builder.mUiHandler;
+        Context context = uiHandler.getContext();
+        app = builder.mAppUtils;
+        console = builder.mConsole;
+        accessibilityBridge = builder.mAccessibilityBridge;
+        mShellSupplier = builder.mShellSupplier;
+        ui = new UI(context, this);
+        this.automator = new SimpleActionAutomator(accessibilityBridge, this);
+        automator.setScreenMetrics(mScreenMetrics);
+        this.info = accessibilityBridge.getInfoProvider();
+        images = new Images(context, this, builder.mScreenCaptureRequester);
+        engines = new Engines(builder.mEngineService, this);
+        dialogs = new Dialogs(this);
+        device = new Device(context);
+        floaty = new Floaty(uiHandler, ui, this);
+        files = new Files(this);
+        media = new Media(context, this);
+        plugins = new Plugins(context, this);
+        ocr = new OCR();
+        mlKitOCR = new MlKitOCR();
+        shizuku = WrappedShizuku.getInstance();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            yolo = new Yolo();
+        }
+    }
+
+    public void init() {
+        if (loopers != null)
+            throw new IllegalStateException("already initialized");
+        threads = new Threads(this);
+        timers = new Timers(this);
+        loopers = new Loopers(this);
+        events = new Events(uiHandler.getContext(), accessibilityBridge, this);
+        mThread = Thread.currentThread();
+        sensors = new Sensors(uiHandler.getContext(), this);
+    }
+
+    public TopLevelScope getTopLevelScope() {
+        return mTopLevelScope.get();
+    }
+
+    public void setTopLevelScope(TopLevelScope topLevelScope) {
+        if (mTopLevelScope != null) {
+            throw new IllegalStateException("top level has already exists");
+        }
+        mTopLevelScope = new WeakReference<>(topLevelScope);
+    }
+
+    /**
+     * 使脚本可以在脚本引擎结束后 持续运行 不被回收
+     * 最好不要使用，如果不能准时回收 可能导致内存泄露问题
+     */
+    public void setNoRecycle() {
+        mTopLevelScope.get().setNoRecycle();
+    }
+
+    public static void setApplicationContext(Context context) {
+        applicationContext = new WeakReference<>(context);
+    }
+
+    public static Context getApplicationContext() {
+        if (applicationContext == null || applicationContext.get() == null) {
+            throw new ScriptEnvironmentException("No application context");
+        }
+        return applicationContext.get();
+    }
+
+    public UiHandler getUiHandler() {
+        return uiHandler;
+    }
+
+    public AccessibilityBridge getAccessibilityBridge() {
+        return accessibilityBridge;
+    }
+
+    public void toast(final String text) {
+        uiHandler.toast(text);
+    }
+
+    public void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            throw new ScriptInterruptedException();
+        }
+    }
+
+    public void setClip(final String text) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            ClipboardUtil.setClip(uiHandler.getContext(), text);
+            return;
+        }
+        VolatileDispose<Object> dispose = new VolatileDispose<>();
+        uiHandler.post(() -> {
+            ClipboardUtil.setClip(uiHandler.getContext(), text);
+            dispose.setAndNotify(text);
+        });
+        dispose.blockedGet();
+    }
+
+    public String getClip() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            return ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString();
+        }
+        final VolatileDispose<String> clip = new VolatileDispose<>();
+        uiHandler.post(() -> clip.setAndNotify(ClipboardUtil.getClipOrEmpty(uiHandler.getContext()).toString()));
+        return clip.blockedGetOrThrow(ScriptInterruptedException.class);
+    }
+
+    public AbstractShell getRootShell() {
+        ensureRootShell();
+        return mRootShell;
+    }
+
+    private void ensureRootShell() {
+        if (mRootShell == null) {
+            mRootShell = mShellSupplier.get();
+            mRootShell.SetScreenMetrics(mScreenMetrics);
+            mShellSupplier = null;
+        }
+    }
+
+    public AbstractShell.Result shell(String cmd, int root) {
+        return ProcessShell.execCommand(cmd, root != 0);
+    }
+
+    public UiSelector selector() {
+        return new UiSelector(accessibilityBridge);
+    }
+
+    public boolean isStopped() {
+        return stop || Thread.currentThread().isInterrupted();
+    }
+
+    public static void requiresApi(int i) {
+        if (Build.VERSION.SDK_INT < i) {
+            throw new ScriptException(GlobalAppContext.getString(R.string.text_requires_sdk_version_to_run_the_script) + SdkVersionUtil.sdkIntToString(i));
+        }
+    }
+
+    public void requestPermissions(String[] permissions) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        Context context = uiHandler.getContext();
+        permissions = Permissions.getPermissionsNeedToRequest(context, permissions);
+        if (permissions.length == 0)
+            return;
+        Permissions.requestPermissions(context, permissions);
+    }
+
+    public void loadJar(String path) {
+        path = files.path(path);
+        try {
+            ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).loadJar(new File(path));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public void loadDex(String path) {
+        path = files.path(path);
+        try {
+            ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).loadDex(this.hashCode(), new File(path));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public void loadLibrary(String libraryName) {
+        try {
+            System.loadLibrary(libraryName);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public String getLibraryPath() {
+        return ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).getLibsDir();
+    }
+
+    /**
+     * 移除所有已加载的外置jar或者dex
+     */
+    public void unloadAllDex() {
+        ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).unloadAllDex();
+    }
+
+    public boolean isBoom() {
+        return ((AndroidClassLoader) ContextFactory.getGlobal().getApplicationClassLoader()).isBoom();
+    }
+
+    public void exit() {
+        stop = true;
+        engines.myEngine().forceStop();
+        threads.exit();
+        if (mThread != null) {
+            mThread.interrupt();
+            mThread = null;
+        }
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            throw new ScriptInterruptedException();
+        }
+    }
+
+    public void exit(Throwable e) {
+        if (stop) {
+            return;
+        }
+        engines.myEngine().uncaughtException(e);
+        exit();
+    }
+
+    @Deprecated
+    public void stop() {
+        exit();
+    }
+
+
+    public void setScreenMetrics(int width, int height) {
+        mScreenMetrics.setScreenMetrics(width, height);
+    }
+
+    public ScreenMetrics getScreenMetrics() {
+        return mScreenMetrics;
+    }
+
+    public void ensureAccessibilityServiceEnabled() {
+        accessibilityBridge.ensureServiceEnabled();
+    }
+
+    public void onExit() {
+        stop = true;
+        Log.d(TAG, "on exit");
+        //清除interrupt状态
+        ThreadCompat.interrupted();
+        //悬浮窗需要第一时间关闭以免出现恶意脚本全屏悬浮窗屏蔽屏幕并且在exit中写死循环的问题
+        ignoresException(floaty::closeAll);
+        try {
+            events.emit("exit");
+        } catch (Throwable e) {
+            console.error("exception on exit: ", e);
+        }
+        ignoresException(threads::shutDownAll);
+        ignoresException(events::recycle);
+        ignoresException(media::recycle);
+        ignoresException(images::releaseScreenCapturer);
+        ignoresException(images::recycle);
+        ignoresException(sensors::unregisterAll);
+        ignoresException(loopers::recycle);
+        ignoresException(() -> {
+            if (mRootShell != null) mRootShell.exit();
+            mRootShell = null;
+            mShellSupplier = null;
+        });
+        ignoresException(timers::recycle);
+        ignoresException(ui::recycle);
+        ignoresException(ocr::release);
+        ignoresException(mlKitOCR::release);
+        ignoresException(() -> mTopLevelScope.get().markReleased(engines.myEngine().getSource().toString()));
+    }
+
+    private void ignoresException(Runnable r) {
+        try {
+            r.run();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Object getImages() {
+        return images;
+    }
+
+    public Object getProperty(String key) {
+        return mProperties.get(key);
+    }
+
+    public Object putProperty(String key, Object value) {
+        return mProperties.put(key, value);
+    }
+
+    public Object removeProperty(String key) {
+        return mProperties.remove(key);
+    }
+
+    public Continuation createContinuation() {
+        return Continuation.Companion.create(this, mTopLevelScope.get());
+    }
+
+    public Continuation createContinuation(Scriptable scope) {
+        return Continuation.Companion.create(this, scope);
+    }
+
+
+    public static String getStackTrace(Throwable e, boolean printJavaStackTrace) {
+        String message = e.getMessage();
+        StringBuilder scriptTrace = new StringBuilder(message == null ? "" : message + "\n");
+        if (e instanceof RhinoException) {
+            RhinoException rhinoException = (RhinoException) e;
+            scriptTrace.append(rhinoException.details()).append("\n");
+            for (ScriptStackElement element : rhinoException.getScriptStack()) {
+                element.renderV8Style(scriptTrace);
+                scriptTrace.append("\n");
+            }
+            if (printJavaStackTrace) {
+                scriptTrace.append("- - - - - - - - - - -\n");
+            } else {
+                return scriptTrace.toString();
+            }
+        }
+        try {
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter writer = new PrintWriter(stringWriter);
+            e.printStackTrace(writer);
+            writer.close();
+            BufferedReader bufferedReader = new BufferedReader(new StringReader(stringWriter.toString()));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                scriptTrace.append("\n").append(line);
+            }
+            return scriptTrace.toString();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return message;
+        }
+    }
+
+}

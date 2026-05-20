@@ -1,0 +1,166 @@
+package net.cc.cca.ui.floating.layoutinspector;
+
+import android.content.Context;
+import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+import com.stardust.app.DialogUtils;
+import com.stardust.enhancedfloaty.FloatyService;
+
+import net.cc.cca.R;
+import net.cc.cca.ui.codegeneration.CodeGenerateDialog;
+import net.cc.cca.ui.floating.FloatyWindowManger;
+import net.cc.cca.ui.floating.FullScreenFloatyWindow;
+
+import com.stardust.view.accessibility.LayoutInspector;
+import com.stardust.view.accessibility.NodeInfo;
+
+import net.cc.cca.ui.widget.BubblePopupMenu;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by Stardust on 2017/3/12.
+ */
+
+public class LayoutBoundsFloatyWindow extends FullScreenFloatyWindow {
+
+    private LayoutBoundsView mLayoutBoundsView;
+    private MaterialDialog mNodeInfoDialog;
+    private BubblePopupMenu mBubblePopMenu;
+    private NodeInfoView mNodeInfoView;
+    private NodeInfo mSelectedNode;
+    private Context mContext;
+    private NodeInfo mRootNode;
+
+    public LayoutBoundsFloatyWindow(NodeInfo rootNode) {
+        mRootNode = rootNode;
+    }
+
+    public static void capture(LayoutInspector inspector, Context context) {
+        LayoutInspector.CaptureAvailableListener listener = new LayoutInspector.CaptureAvailableListener() {
+            @Override
+            public void onCaptureAvailable(NodeInfo capture) {
+                inspector.removeCaptureAvailableListener(this);
+                LayoutBoundsFloatyWindow window = new LayoutBoundsFloatyWindow(capture);
+                FloatyWindowManger.addWindow(context, window);
+            }
+        };
+        inspector.addCaptureAvailableListener(listener);
+        if (!inspector.captureCurrentWindow()) {
+            inspector.removeCaptureAvailableListener(listener);
+        }
+    }
+
+    @Override
+    protected View onCreateView(FloatyService floatyService) {
+        mContext = new ContextThemeWrapper(floatyService, R.style.AppTheme);
+        mLayoutBoundsView = new LayoutBoundsView(mContext) {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent event) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                    close();
+                    return true;
+                }
+                return super.dispatchKeyEvent(event);
+            }
+        };
+        return mLayoutBoundsView;
+    }
+
+    protected void onViewCreated(View v) {
+        mLayoutBoundsView.setOnNodeInfoSelectListener(info -> {
+            mSelectedNode = info;
+            ensureOperationPopMenu();
+            if (mBubblePopMenu.getContentView().getMeasuredWidth() <= 0)
+                mBubblePopMenu.preMeasure();
+            mBubblePopMenu.showAsDropDownAtLocation(mLayoutBoundsView, info.getBoundsInScreen().height(), info.getBoundsInScreen().centerX() - mBubblePopMenu.getContentView().getMeasuredWidth() / 2, info.getBoundsInScreen().bottom - mLayoutBoundsView.getStatusBarHeight());
+        });
+        mLayoutBoundsView.getBoundsPaint().setStrokeWidth(2f);
+        mLayoutBoundsView.setRootNode(mRootNode);
+        if (mSelectedNode != null)
+            mLayoutBoundsView.setSelectedNode(mSelectedNode);
+    }
+
+
+    private void showNodeInfo() {
+        ensureDialog();
+        mNodeInfoView.setNodeInfo(mSelectedNode);
+        mNodeInfoDialog.show();
+    }
+
+    private void ensureOperationPopMenu() {
+        if (mBubblePopMenu != null)
+            return;
+        mBubblePopMenu = new BubblePopupMenu(mContext, Arrays.asList(
+                mContext.getString(R.string.text_show_widget_infomation),
+                mContext.getString(R.string.text_show_layout_hierarchy),
+                mContext.getString(R.string.text_generate_code),
+                "隐藏此节点",
+                "隐藏所有同框节点"));
+        mBubblePopMenu.setOnItemClickListener((view, position) -> {
+            mBubblePopMenu.dismiss();
+            Map<Integer, Consumer> actionMap = new HashMap<>();
+            actionMap.put(0, this::showNodeInfo);
+            actionMap.put(1, this::showLayoutHierarchy);
+            actionMap.put(2, this::generateCode);
+            actionMap.put(3, this::excludeNode);
+            actionMap.put(4, this::excludeAllBoundsSameNode);
+
+            // API 24可以用完整的lambda表达式，但是为了兼容性只能用以下方式
+            Consumer consumer = actionMap.get(position);
+            if (consumer != null) {
+                consumer.apply();
+            }
+        });
+        mBubblePopMenu.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mBubblePopMenu.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    private interface Consumer {
+        void apply();
+    }
+
+    private void generateCode() {
+        DialogUtils.showDialog(new CodeGenerateDialog(mContext, mRootNode, mSelectedNode)
+                .build());
+    }
+
+    private void excludeNode() {
+        mSelectedNode.setHidden(true);
+        mSelectedNode = null;
+    }
+
+    private void excludeAllBoundsSameNode() {
+        mLayoutBoundsView.hideAllBoundsSameNode(mSelectedNode);
+        mSelectedNode = null;
+    }
+
+    private void showLayoutHierarchy() {
+        close();
+        LayoutHierarchyFloatyWindow window = new LayoutHierarchyFloatyWindow(mRootNode);
+        window.setSelectedNode(mSelectedNode);
+        FloatyService.addWindow(window);
+    }
+
+    private void ensureDialog() {
+        if (mNodeInfoDialog == null) {
+            mNodeInfoView = new NodeInfoView(mContext);
+            mNodeInfoDialog = new MaterialDialog.Builder(mContext)
+                    .customView(mNodeInfoView, false)
+                    .theme(Theme.LIGHT)
+                    .build();
+            mNodeInfoDialog.getWindow().setType(FloatyWindowManger.getWindowType());
+        }
+    }
+
+    public void setSelectedNode(NodeInfo selectedNode) {
+        mSelectedNode = selectedNode;
+    }
+}

@@ -435,7 +435,9 @@ public class PFiles {
         return deleteRecursively(new File(path));
     }
 
+    @Deprecated
     public static String getSdcardPath() {
+        // Android 10+ 不推荐使用，请使用 StorageUtil
         return Environment.getExternalStorageDirectory().getPath();
     }
 
@@ -498,8 +500,13 @@ public class PFiles {
     }
 
     public static String getSimplifiedPath(String path) {
-        if (path.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-            return path.substring(Environment.getExternalStorageDirectory().getPath().length());
+        // 简化路径显示，兼容 Android 10+ 分区存储
+        if (path == null) return "";
+        
+        // 检查是否是传统 SD 卡路径
+        String sdcardPath = Environment.getExternalStorageDirectory().getPath();
+        if (path.startsWith(sdcardPath)) {
+            return path.substring(sdcardPath.length());
         }
         return path;
     }

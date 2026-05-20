@@ -1,11 +1,12 @@
 package com.stardust.app;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by Stardust on 2017/3/5.
@@ -40,11 +41,12 @@ public interface OnActivityResultDelegate {
         }
 
         public void addDelegate(int requestCode, OnActivityResultDelegate delegate) {
+            addDelegate(delegate);
             mSpecialDelegate.put(requestCode, delegate);
         }
 
-        public void removeDelegate(OnActivityResultDelegate delegate) {
-            if (mDelegates.remove(delegate)) {
+        public synchronized void removeDelegate(OnActivityResultDelegate delegate) {
+            if (mDelegates.remove(delegate) && mSpecialDelegate.indexOfValue(delegate) > -1) {
                 mSpecialDelegate.removeAt(mSpecialDelegate.indexOfValue(delegate));
             }
         }

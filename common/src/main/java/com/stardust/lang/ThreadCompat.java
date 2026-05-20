@@ -1,8 +1,6 @@
 package com.stardust.lang;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -65,5 +63,21 @@ public class ThreadCompat extends Thread {
         interruptedThreads.add(this);
     }
 
+    /**
+     * 主动移除弱引用
+     *
+     * @param targetThread 目标线程
+     */
+    protected void removeReference(Thread targetThread) {
+        interruptedThreads.remove(targetThread);
+    }
 
+    @Override
+    public void run() {
+        try {
+            super.run();
+        } finally {
+            removeReference(this);
+        }
+    }
 }

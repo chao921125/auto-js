@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Auto.js</string>
+    <string name="app_name">Auto.js M</string>
     <string name="text_accessibility_service_description">Required by the script automatic operation (click, long press, slide, etc.).</string>
     <string name="text_new_file">New File</string>
     <string name="text_create_fail">Creation failed</string>
@@ -28,12 +28,12 @@
     <string name="text_about">About</string>
     <string name="text_licenses">Open Sources Licenses</string>
     <string name="text_do_not_remind_again">Don\'t show again</string>
-    <string name="copyright">Copyright©2016 All right reserves.</string>
+    <string name="copyright">Copyright©2018–2020 All right reserves.</string>
     <string name="developer">Stardust</string>
     <string name="github">Source Code</string>
     <string name="text_already_copy_to_clip">Copied</string>
     <string name="my_github">https://github.com/hyb1996/NoRootScriptDroid</string>
-    <string name="share_app">[UiAutomator]Download：http://www.coolapk.com/apk/org.autojs.autojs </string>
+    <string name="share_app">[UiAutomator]Download：http://www.coolapk.com/apk/net.cc.cca </string>
     <string name="text_floating_window">Floating Window</string>
     <string name="text_error_report">Bug Report</string>
     <string name="text_press_again_to_exit">Press again to exit</string>
@@ -96,6 +96,8 @@
     <string name="key_use_volume_control_running">key_use_volume_control_running</string>
     <string name="text_use_volume_to_stop_running">Stop all scripts when volume changes</string>
     <string name="text_need_to_enable_accessibility_service">Need to enable Accessibility Service</string>
+    <string name="text_need_manage_all_files_access">Manage All Files Permission</string>
+    <string name="explain_all_files_access">Requires manage all files permission to manage all the code files</string>
     <string name="text_refresh">Refresh</string>
     <string name="notice_no_running_script"><![CDATA[No running script φ(>ω<*)]]></string>
     <string name="text_checking_update">Checking for updates</string>
@@ -149,14 +151,23 @@
     <string name="text_code_beautify">Beautify code</string>
     <string name="text_guard_mode">Protection mode</string>
     <string name="summary_guard_mode">Prevent automation of scripts when Auto.js in the front</string>
-    <string name="text_layout_inspector_is_dumping">Inspecting layout...</string>
+    <string name="text_layout_inspector_is_dumping">Inspecting layout…</string>
     <string name="text_force_stop">Force stop</string>
-    <string name="text_execution_finished">\\n------------\\n[%s]Finished，spent %f seconds.</string>
+    <string name="text_execution_finished" formatted="false">\\n------------\\n[%s]Finished，spent %f seconds.</string>
     <string name="text_about_me_and_repo">About app and developer</string>
     <string name="text_attribute">Attribute</string>
     <string name="text_value">Value</string>
     <string name="text_show_widget_infomation">View info</string>
     <string name="text_show_layout_hierarchy">View in layout bounds\' view</string>
     <string name="default_value_script_dir_path">/Scripts/</string>
+    <string name="text_timed_task">TimedTask</string>
+    <string name="text_send">Send</string>
+    <string name="text_run_repeatedly">RunRepeatedly</string>
+    <string name="text_loop_interval">Interval(S)</string>
+    <string name="text_loop_delay">Delay(S)</string>
+    <string name="text_loop_times">Loop times</string>
+    <string name="hint_loop_times">0 for infinite loops</string>
+    <string name="hint_loop_delay">delay start till provided seconds</string>
+    <string name="text_more">More</string>
 
 </resources>

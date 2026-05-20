@@ -20,6 +20,12 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.Accessibilit
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_UP
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SET_PROGRESS
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SHOW_ON_SCREEN
+// Android 11+ 新增动作
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_PAGE_LEFT
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_PAGE_RIGHT
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_PAGE_UP
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_PAGE_DOWN
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_ACCESSIBLE_FOCUS
 
 /**
  * Created by Stardust on 2017/3/9.
@@ -267,6 +273,43 @@ open class UiObject(info: Any?, private val allocator: AccessibilityNodeInfoAllo
         return performAction(ACTION_SCROLL_TO_POSITION.id,
                 ActionArgument.IntActionArgument(AccessibilityNodeInfoCompat.ACTION_ARGUMENT_ROW_INT, row),
                 ActionArgument.IntActionArgument(AccessibilityNodeInfoCompat.ACTION_ARGUMENT_COLUMN_INT, column))
+    }
+
+    // Android 11+ 新增动作支持
+    
+    /**
+     * 页面向左滚动（Android 11+）
+     */
+    fun pageLeft(): Boolean {
+        return performAction(ACTION_PAGE_LEFT.id)
+    }
+
+    /**
+     * 页面向右滚动（Android 11+）
+     */
+    fun pageRight(): Boolean {
+        return performAction(ACTION_PAGE_RIGHT.id)
+    }
+
+    /**
+     * 页面向上滚动（Android 11+）
+     */
+    fun pageUp(): Boolean {
+        return performAction(ACTION_PAGE_UP.id)
+    }
+
+    /**
+     * 页面向下滚动（Android 11+）
+     */
+    fun pageDown(): Boolean {
+        return performAction(ACTION_PAGE_DOWN.id)
+    }
+
+    /**
+     * 设置无障碍焦点（Android 11+ 增强）
+     */
+    fun accessibleFocus(): Boolean {
+        return performAction(ACTION_ACCESSIBLE_FOCUS.id)
     }
 
     override fun getChild(index: Int): AccessibilityNodeInfoCompat {

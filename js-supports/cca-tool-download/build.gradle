@@ -1,0 +1,62 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion versions.compile
+
+    defaultConfig {
+        minSdkVersion versions.mini
+        targetSdkVersion versions.target
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    lint {
+        abortOnError false
+    }
+
+
+}
+
+
+task makeDownloadJar(type: Copy) {
+    dependsOn build
+    // 删除存在的
+    delete 'build/libs/download-sdk.jar'
+    // 设置拷贝的文件
+    from('build/intermediates/aar_main_jar/release/')
+    // 打进jar包后的文件目录
+    into('build/libs/')
+    // 将classes.jar放入build/libs/目录下
+    // include ,exclude参数来设置过滤
+    //（我们只关心classes.jar这个文件）
+    include('classes.jar')
+    // 重命名
+    rename ('classes.jar', 'download-sdk.jar')
+}
+
+task dexJar(type: Exec) {
+    def dxFile = file('../dex_support/dx')
+    if (!dxFile.exists()) {
+        println 'dx文件不存在，无法执行 请在dex_support下创建软连接文件'
+        return
+    }
+    dependsOn(makeDownloadJar)
+    workingDir './'
+    def commands = []
+    commands << '../dex_support/dx'
+    commands << '--dex'
+    commands << '--output'
+    commands << 'build/libs/download.dex'
+    commands << 'build/libs/download-sdk.jar'
+    commandLine = commands
+}
+
+dependencies {
+    implementation project(path: ':cca')
+    testImplementation "junit:junit:$junit_version"
+}

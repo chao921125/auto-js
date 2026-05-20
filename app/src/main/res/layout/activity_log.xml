@@ -26,7 +26,7 @@
         android:layout_height="match_parent"
         android:paddingLeft="4dp">
 
-        <com.stardust.autojs.core.console.ConsoleView
+        <net.cc.stardust.core.console.ConsoleView
             android:id="@+id/console"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

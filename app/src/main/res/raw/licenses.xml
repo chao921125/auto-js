@@ -101,4 +101,34 @@
         <url>http://www.lingala.net/zip4j/</url>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>paddle</name>
+        <copyright>Copyright (c) 2016 PaddlePaddle Authors. All Rights Reserved</copyright>
+        <url>https://github.com/paddlepaddle/paddle</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>onnxruntime</name>
+        <copyright>Copyright (c) Microsoft Corporation</copyright>
+        <url>https://github.com/microsoft/onnxruntime</url>
+        <license>MIT License</license>
+    </notice>
+    <notice>
+        <name>yolo-onnx-java</name>
+        <copyright>Copyright (c) 2023 agricultureiot</copyright>
+        <url>https://gitee.com/agricultureiot/yolo-onnx-java</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>ncnn</name>
+        <copyright>Copyright (C) 2017 THL A29 Limited, a Tencent company.</copyright>
+        <url>https://github.com/Tencent/ncnn</url>
+        <license>BSD-3-Clause</license>
+    </notice>
+    <notice>
+        <name>ncnn-android-yolov8</name>
+        <copyright>Copyright (c) FeiGeChuanShu</copyright>
+        <url>https://github.com/FeiGeChuanShu/ncnn-android-yolov8</url>
+        <license>NOT SPECIFIED</license>
+    </notice>
 </notices>

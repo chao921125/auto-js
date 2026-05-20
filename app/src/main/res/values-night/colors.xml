@@ -1,18 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="window_background">#202020</color>
-    <color name="item_background">#333333</color>
-    <color name="item_background_dark">#252525</color>
-    <color name="drawer_menu_item_text_color">#9a9a9a</color>
-    <color name="drawer_menu_group_text_color">#808080</color>
-    <color name="divider">#111214</color>
-    <color name="text_color_secondary">#9a9a9a</color>
+    <!-- 深色主题颜色定义 -->
+    
+    <!-- 主要颜色 - 调整为深色模式友好的色调 -->
+    <color name="colorPrimary">#00796B</color>
+    <color name="colorPrimaryDark">#004D40</color>
+    <color name="colorAccent">#0288D1</color>
+    
+    <!-- 窗口和背景 -->
+    <color name="window_background">#121212</color>
+    <color name="item_background">#1E1E1E</color>
+    <color name="item_background_dark">#181818</color>
+    <color name="bubble_bg">#2C2C2E</color>
+    
+    <!-- 文本颜色 -->
+    <color name="text_color_secondary">#B0B0B0</color>
     <color name="text_color_thirdly">#808080</color>
-    <color name="tab_indicator">#6D6D6E</color>
-    <color name="tab_text">#3A3A3C</color>
-    <color name="toolbar">#8D8D8E</color>
-    <color name="toolbar_disabled">#3A3A3C</color>
-    <color name="console_debug">#dfc0c0c0</color>
-    <color name="console_verbose">#7F7F80</color>
+    <color name="prefTextColorSecondary">#808080</color>
+    <color name="prefTextColorPrimary">#E0E0E0</color>
+    
+    <!-- 菜单颜色 -->
+    <color name="drawer_menu_item_text_color">#E0E0E0</color>
+    <color name="drawer_menu_group_text_color">#9E9E9E</color>
+    
+    <!-- 分割线 -->
+    <color name="divider">#2C2C2E</color>
+    <color name="divider_functions_keyboard">#2C2C2E</color>
+    
+    <!-- 工具栏和标签 -->
+    <color name="toolbar">#1E1E1E</color>
+    <color name="toolbar_disabled">#38383A</color>
+    <color name="tab_indicator">#00796B</color>
+    <color name="tab_text">#B0B0B0</color>
+    
+    <!-- 控制台 -->
+    <color name="console_debug">#B0B0B0</color>
+    <color name="console_verbose">#808080</color>
+    
+    <!-- 其他 -->
+    <color name="theme_color_black">#111214</color>
+    <color name="color_r">#FF6B6B</color>
+    <color name="color_j">#66BB6A</color>
+    <color name="market_button_selected">#E14123</color>
+    <color name="market_button_unselected">#757575</color>
+    <color name="sliding_up_panel_shadow_color">#99000000</color>
 
 </resources>

@@ -1,34 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="org.autojs.autojs">
-
+          package="net.cc.cca">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
 
 
     <!-- 非Auto.js运行必需，不会主动申请，某些脚本可以自行申请-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <!--  蓝牙权限  -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
 
     <!-- Ad SDK Permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-
     <application
-        xmlns:tools="http://schemas.android.com/tools"
-        android:name=".App"
+        android:name="net.cc.cca.App"
         android:allowBackup="false"
         android:icon="@drawable/autojs_material"
         android:label="@string/app_name"
@@ -36,17 +49,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:label, android:icon, android:allowBackup">
-
+        android:requestLegacyExternalStorage="true"
+        tools:replace="android:label, android:icon, android:allowBackup"
+        tools:targetApi="m">
+        <!-- 开启内存分析 -->
+        <profileable android:shell="true" android:enabled="true"
+            tools:targetApi="q" />
         <meta-data
             android:name="android.max_aspect"
             android:value="2.1"/>
 
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name="net.cc.cca.ui.splash.SplashActivity"
             android:hardwareAccelerated="true"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Splash">
+            android:theme="@style/AppTheme.Splash"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"/>
 
@@ -58,12 +76,14 @@
             android:hardwareAccelerated="true"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.FullScreen">
+            android:theme="@style/AppTheme.FullScreen"
+            android:exported="true">
         </activity>
         <activity
-            android:name=".external.shortcut.ShortcutActivity"
-            android:taskAffinity="org.autojs.autojs.external.shortcut.ShortcutActivity"
-            android:theme="@android:style/Theme.NoDisplay">
+            android:name="net.cc.cca.external.shortcut.ShortcutActivity"
+            android:taskAffinity="net.cc.cca.external.shortcut.ShortcutActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -72,8 +92,8 @@
         </activity>
 
         <provider
-            android:name=".external.fileprovider.AppFileProvider"
-            android:authorities="org.autojs.autojs.fileprovider"
+            android:name="net.cc.cca.external.fileprovider.AppFileProvider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -86,38 +106,39 @@
             android:configChanges="orientation|screenSize"
             android:launchMode="standard"
             android:multiprocess="true"
-            android:taskAffinity="org.autojs.autojs.edit"
+            android:taskAffinity="net.cc.cca.edit"
+            android:exported="false"
             android:theme="@style/EditorTheme">
         </activity>
-        <activity android:name=".ui.settings.AboutActivity_"/>
+        <activity android:name=".ui.settings.AboutActivity_" android:exported="false"/>
         <activity
-            android:name=".ui.settings.SettingsActivity_"
+            android:name=".ui.settings.SettingsActivity_" android:exported="false"
             android:theme="@style/AppTheme.Settings"/>
-        <activity android:name=".ui.error.ErrorReportActivity"/>
+        <activity android:name="net.cc.cca.ui.error.ErrorReportActivity" android:exported="false"/>
         <activity
             android:name=".external.tasker.TaskerScriptEditActivity_"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize" android:exported="false"
             />
-        <activity android:name=".ui.edit.ViewSampleActivity"/>
         <activity
-            android:name=".ui.user.LoginActivity_"
+            android:name=".ui.user.LoginActivity_" android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".ui.user.RegisterActivity_"
+            android:name=".ui.user.RegisterActivity_" android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".ui.user.WebActivity_"/>
+        <activity android:name=".ui.user.WebActivity_" android:exported="false"/>
         <activity
             android:name=".ui.project.BuildActivity_"
-            android:configChanges="orientation|screenSize"/>
-        <activity android:name=".ui.project.ProjectConfigActivity_"/>
-        <activity android:name=".ui.log.LogActivity_"/>
-        <activity android:name=".ui.doc.DocumentationActivity_"/>
-        <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_"/>
-        <activity android:name=".ui.timing.TimedTaskSettingActivity_"/>
+            android:configChanges="orientation|screenSize" android:exported="false"/>
+        <activity android:name=".ui.project.ProjectConfigActivity_" android:exported="false"/>
+        <activity android:name=".ui.log.LogActivity_" android:exported="false"/>
+        <activity android:name=".ui.doc.DocumentationActivity_" android:exported="false"/>
+        <activity android:name=".ui.shortcut.ShortcutIconSelectActivity_" android:exported="false"/>
+        <activity android:name=".ui.timing.TimedTaskSettingActivity_" android:exported="false"/>
         <activity
-            android:name=".ui.shortcut.ShortcutCreateActivity"
-            android:theme="@style/AppTheme.Transparent"/>
-        <activity android:name=".external.widget.ScriptWidgetSettingsActivity_">
+            android:name="net.cc.cca.ui.shortcut.ShortcutCreateActivity"
+            android:theme="@style/AppTheme.Transparent" android:exported="false"/>
+        <activity android:name=".external.widget.ScriptWidgetSettingsActivity_"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
@@ -128,20 +149,22 @@
         </activity>
 
         <activity
-            android:name=".ui.error.IssueReporterActivity"
+            android:name="net.cc.cca.ui.error.IssueReporterActivity" android:exported="false"
             android:theme="@style/IssueReporterTheme"/>
 
 
-        <service android:name=".external.foreground.ForegroundService"/>
-        <service android:name=".external.ScriptExecutionIntentService"/>
+        <service android:name="net.cc.cca.external.foreground.ForegroundService"
+            android:foregroundServiceType="mediaProjection" android:exported="false"/>
+        <service android:name="net.cc.cca.external.ScriptExecutionIntentService" android:exported="false"/>
 
-        <activity android:name=".external.tasker.TaskPrefEditActivity_"/>
+        <activity android:name=".external.tasker.TaskPrefEditActivity_" android:exported="false"/>
 
         <service
-            android:name=".external.tile.LayoutBoundsTile"
+            android:name="net.cc.cca.external.tile.LayoutBoundsTile"
             android:icon="@drawable/ic_circular_menu_bounds"
             android:label="@string/text_inspect_layout_bounds"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
             <meta-data
                 android:name="android.service.quicksettings.ACTIVE_TILE"
                 android:value="false"/>
@@ -151,10 +174,11 @@
         </service>
 
         <service
-            android:name=".external.tile.LayoutHierarchyTile"
+            android:name="net.cc.cca.external.tile.LayoutHierarchyTile"
             android:icon="@drawable/ic_circular_menu_hierarchy"
             android:label="@string/text_inspect_layout_hierarchy"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
 
             <meta-data
                 android:name="android.service.quicksettings.ACTIVE_TILE"
@@ -176,7 +200,8 @@
             </intent-filter>
         </activity-alias>
 
-        <receiver android:name="org.autojs.autojs.external.receiver.StaticBroadcastReceiver">
+        <receiver android:name="net.cc.cca.external.receiver.StaticBroadcastReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
@@ -200,7 +225,8 @@
                 <action android:name="android.intent.action.WALLPAPER_CHANGED"/>
                 <action android:name="android.intent.action.USER_UNLOCKED"/>
                 <action android:name="android.intent.action.USER_PRESENT"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
@@ -214,7 +240,7 @@
         </receiver>
 
         <receiver
-            android:name=".external.tasker.FireSettingReceiver"
+            android:name="net.cc.cca.external.tasker.FireSettingReceiver"
             android:exported="true"
             android:process=":background"
             tools:ignore="ExportedReceiver">
@@ -226,9 +252,10 @@
         </receiver>
 
         <activity
-            android:name=".external.open.EditIntentActivity"
+            android:name="net.cc.cca.external.open.EditIntentActivity"
             android:icon="@drawable/autojs_material"
-            android:label="@string/text_edit_script">
+            android:label="@string/text_edit_script"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
@@ -243,11 +270,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".external.open.RunIntentActivity"
+            android:name="net.cc.cca.external.open.RunIntentActivity"
             android:icon="@drawable/autojs_material"
             android:label="@string/text_run_script"
-            android:taskAffinity="org.autojs.autojs.external.open.RunIntentActivity"
-            android:theme="@android:style/Theme.NoDisplay">
+            android:taskAffinity="net.cc.cca.external.open.RunIntentActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
@@ -262,10 +290,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".external.open.ImportIntentActivity"
+            android:name="net.cc.cca.external.open.ImportIntentActivity"
             android:icon="@drawable/autojs_material"
             android:label="@string/text_import_script"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/AppTheme.Transparent"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.EDIT"/>
@@ -283,13 +312,15 @@
         <service
             android:name="com.stardust.notification.NotificationListenerService"
             android:label="@string/app_name"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService"/>
             </intent-filter>
         </service>
 
-        <receiver android:name=".external.widget.ScriptWidget">
+        <receiver android:name="net.cc.cca.external.widget.ScriptWidget"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -299,12 +330,20 @@
                 android:resource="@xml/script_widget_config"/>
         </receiver>
 
-        <receiver android:name=".timing.TaskReceiver">
+        <receiver android:name="net.cc.cca.timing.TaskReceiver"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.stardust.autojs.action.task"/>
+                <action android:name="net.cc.stardust.action.task"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".timing.work.AlarmManagerProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="net.cc.stardust.action.check_task"/>
+                <action android:name="com.android.deskclock.ALARM_ALERT"/>
             </intent-filter>
         </receiver>
 
     </application>
-
 </manifest>

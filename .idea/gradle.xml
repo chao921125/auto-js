@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="testRunner" value="CHOOSE_PER_TEST" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="jbr-17" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/apkbuilder" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/autojs" />
             <option value="$PROJECT_DIR$/automator" />
+            <option value="$PROJECT_DIR$/cca" />
+            <option value="$PROJECT_DIR$/cca-aar" />
+            <option value="$PROJECT_DIR$/cca-aar/apksigner" />
+            <option value="$PROJECT_DIR$/cca-aar/emulatorview" />
+            <option value="$PROJECT_DIR$/cca-aar/libtermexec" />
+            <option value="$PROJECT_DIR$/cca-aar/opencv" />
+            <option value="$PROJECT_DIR$/cca-aar/opencvhelper" />
+            <option value="$PROJECT_DIR$/cca-aar/paddleocr" />
+            <option value="$PROJECT_DIR$/cca-aar/rhino-jdk7" />
+            <option value="$PROJECT_DIR$/cca-aar/rootshell" />
+            <option value="$PROJECT_DIR$/cca-aar/term" />
+            <option value="$PROJECT_DIR$/cca-aar/yolov8ncnn" />
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/inrt" />
+            <option value="$PROJECT_DIR$/js-supports" />
+            <option value="$PROJECT_DIR$/js-supports/cca-tool-color-center" />
+            <option value="$PROJECT_DIR$/js-supports/cca-tool-common" />
+            <option value="$PROJECT_DIR$/js-supports/cca-tool-download" />
+            <option value="$PROJECT_DIR$/js-supports/cca-tool-encrypt" />
+            <option value="$PROJECT_DIR$/js-supports/cca-tool-webview" />
+            <option value="$PROJECT_DIR$/js-supports/kill-pro-limit" />
+            <option value="$PROJECT_DIR$/js-supports/native-lib" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

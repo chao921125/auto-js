@@ -3,6 +3,7 @@ package com.stardust.view.accessibility
 import android.os.Build
 import android.util.Log
 import android.view.KeyEvent
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.stardust.event.EventDispatcher
@@ -98,6 +99,7 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
         Log.v(TAG, "onDestroy: $instance")
         instance = null
         mEventExecutor?.shutdownNow()
+        refreshFloatyService()
         super.onDestroy()
     }
 
@@ -105,6 +107,7 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
     override fun onServiceConnected() {
         Log.v(TAG, "onServiceConnected: " + serviceInfo.toString())
         instance = this
+        refreshFloatyService()
         super.onServiceConnected()
         LOCK.lock()
         ENABLED.signalAll()
@@ -115,6 +118,17 @@ open class AccessibilityService : android.accessibilityservice.AccessibilityServ
 
     fun fastRootInActiveWindow(): AccessibilityNodeInfo? {
         return mFastRootInActiveWindow
+    }
+
+    /**
+     * 刷新悬浮窗的windowManager
+     */
+    open fun refreshFloatyService() {
+        // do refresh on sub class
+    }
+
+    open fun getWindowManager() : WindowManager? {
+        return null;
     }
 
     companion object {
