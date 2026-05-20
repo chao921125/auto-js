@@ -158,8 +158,8 @@ public class FunctionsKeyboardView extends FrameLayout {
     }
 
     private void initModulesView() {
-        binding.modulesView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false));
-        binding.modulesView.setAdapter(new ModulesAdapter());
+        binding.moduleList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false));
+        binding.moduleList.setAdapter(new ModulesAdapter());
     }
 
     private void loadModules() {
@@ -170,7 +170,7 @@ public class FunctionsKeyboardView extends FrameLayout {
                     if (modules.size() > 0) {
                         setSelectedModule(modules.get(0), null);
                     }
-                    binding.modulesView.getAdapter().notifyDataSetChanged();
+                    binding.moduleList.getAdapter().notifyDataSetChanged();
                     binding.properties.getAdapter().notifyDataSetChanged();
                 });
     }

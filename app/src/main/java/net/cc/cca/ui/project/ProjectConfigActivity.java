@@ -183,13 +183,13 @@ public class ProjectConfigActivity extends BaseActivity {
     }
 
     private void syncProjectConfig() {
-        mProjectConfig.setName(mAppName.getText().toString());
-        mProjectConfig.setVersionCode(Integer.parseInt(mVersionCode.getText().toString()));
-        mProjectConfig.setVersionName(mVersionName.getText().toString());
-        mProjectConfig.setMainScriptFile(mMainFileName.getText().toString());
-        mProjectConfig.setPackageName(mPackageName.getText().toString());
+        mProjectConfig.setName(binding.appName.getText().toString());
+        mProjectConfig.setVersionCode(Integer.parseInt(binding.versionCode.getText().toString()));
+        mProjectConfig.setVersionName(binding.versionName.getText().toString());
+        mProjectConfig.setMainScriptFile(binding.mainFileName.getText().toString());
+        mProjectConfig.setPackageName(binding.packageName.getText().toString());
         if (mNewProject) {
-            String location = mProjectLocation.getText().toString();
+            String location = binding.projectLocation.getText().toString();
             mDirectory = new File(location);
         }
         //mProjectConfig.getLaunchConfig().setHideLogs(true);
@@ -197,10 +197,10 @@ public class ProjectConfigActivity extends BaseActivity {
 
     private boolean checkInputs() {
         boolean inputValid = true;
-        inputValid &= checkNotEmpty(mAppName);
-        inputValid &= checkNotEmpty(mVersionCode);
-        inputValid &= checkNotEmpty(mVersionName);
-        inputValid &= checkPackageNameValid(mPackageName);
+        inputValid &= checkNotEmpty(binding.appName);
+        inputValid &= checkNotEmpty(binding.versionCode);
+        inputValid &= checkNotEmpty(binding.versionName);
+        inputValid &= checkPackageNameValid(binding.packageName);
         return inputValid;
     }
 

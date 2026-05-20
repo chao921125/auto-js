@@ -120,8 +120,9 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void setupClickListeners() {
-        binding.setting.setOnClickListener(v -> startSettingActivity());
-        binding.exit.setOnClickListener(v -> exitCompletely());
+        // Settings and exit buttons removed from main layout
+        // binding.settings.setOnClickListener(v -> startSettingActivity());
+        // binding.exitApp.setOnClickListener(v -> exitCompletely());
     }
 
     private void showAnnunciationIfNeeded() {
@@ -366,7 +367,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         mSearchViewItem = new SearchViewItem(this, searchMenuItem) {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                if (mViewPager.getCurrentItem() == 1) {
+                if (binding.viewpager.getCurrentItem() == 1) {
                     mDocsSearchItemExpanded = true;
                     mLogMenuItem.setIcon(R.drawable.ic_ali_up);
                 }

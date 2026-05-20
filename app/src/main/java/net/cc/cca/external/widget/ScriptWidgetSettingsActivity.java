@@ -17,6 +17,8 @@ import net.cc.cca.model.script.Scripts;
 import net.cc.cca.ui.BaseActivity;
 import net.cc.cca.ui.explorer.ExplorerView;
 
+import java.io.File;
+
 /**
  * Created by Stardust on 2017/7/11.
  */

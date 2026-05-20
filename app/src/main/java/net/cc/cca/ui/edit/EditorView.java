@@ -384,31 +384,22 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     @Override
     public void onToolbarMenuItemClick(int id) {
-        switch (id) {
-            case R.id.run:
-                runAndSaveFileIfNeeded();
-                break;
-            case R.id.save:
-                saveFile();
-                break;
-            case R.id.undo:
-                undo();
-                break;
-            case R.id.redo:
-                redo();
-                break;
-            case R.id.replace:
-                replace();
-                break;
-            case R.id.find_next:
-                findNext();
-                break;
-            case R.id.find_prev:
-                findPrev();
-                break;
-            case R.id.cancel_search:
-                cancelSearch();
-                break;
+        if (id == R.id.run) {
+            runAndSaveFileIfNeeded();
+        } else if (id == R.id.save) {
+            saveFile();
+        } else if (id == R.id.undo) {
+            undo();
+        } else if (id == R.id.redo) {
+            redo();
+        } else if (id == R.id.replace) {
+            replace();
+        } else if (id == R.id.find_next) {
+            findNext();
+        } else if (id == R.id.find_prev) {
+            findPrev();
+        } else if (id == R.id.cancel_search) {
+            cancelSearch();
         }
     }
 

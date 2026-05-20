@@ -32,7 +32,7 @@ android {
             storeFile file('debug/autojs-pkcs12-debug.jks')
             storePassword 'fixture'
             keyPassword 'fixture'
-            keyAlias = 'cca-debug'
+            keyAlias = 'autojs-debug'
         }
     }
     compileSdkVersion versions.compile

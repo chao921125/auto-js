@@ -7,6 +7,8 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import net.cc.cca.R;
+
 import java.io.File;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -28,9 +30,9 @@ public class PathChecker {
 
     public static int check(final String path) {
         if (TextUtils.isEmpty(path))
-            return net.cc.stardust.R.string.text_path_is_empty;
+            return R.string.text_path_is_empty;
         if (!new File(path).exists())
-            return net.cc.stardust.R.string.text_file_not_exists;
+            return R.string.text_file_not_exists;
         return CHECK_RESULT_OK;
     }
 
@@ -45,7 +47,7 @@ public class PathChecker {
 
     private int checkWithStoragePermission(String path) {
         if (mContext instanceof Activity && !hasStorageReadPermission((Activity) mContext)) {
-            return net.cc.stardust.R.string.text_no_file_rw_permission;
+            return R.string.text_no_file_rw_permission;
         }
         return check(path);
     }

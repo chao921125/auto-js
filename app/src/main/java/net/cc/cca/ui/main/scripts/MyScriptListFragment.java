@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.stardust.app.GlobalAppContext;
+import com.stardust.pio.PFiles;
 import com.stardust.util.IntentUtil;
 
 import net.cc.cca.Pref;
@@ -27,10 +29,13 @@ import net.cc.cca.ui.explorer.ExplorerView;
 import net.cc.cca.ui.main.FloatingActionMenu;
 import net.cc.cca.ui.main.QueryEvent;
 import net.cc.cca.ui.main.ViewPagerFragment;
-import net.cc.cca.ui.project.ProjectConfigActivity;
 import net.cc.cca.ui.viewmodel.ExplorerItemList;
+import org.apache.commons.io.FileUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.File;
+import java.io.IOException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -199,10 +204,27 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
                         .importFile();
                 break;
             case 3:
-                ProjectConfigActivity.builder(getContext())
-                        .putExtra(ProjectConfigActivity.EXTRA_PARENT_DIRECTORY, mExplorerView.getCurrentPage().getPath())
-                        .putExtra(ProjectConfigActivity.EXTRA_NEW_PROJECT, true)
-                        .startActivity();
+                // Create new project - simplified version
+                File dir = new File(mExplorerView.getCurrentPage().getPath(), "NewProject");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                try {
+                    String initialContent = "\"use strict\";\n\nlog(\"Hello, NewProject\");";
+                    FileUtils.writeStringToFile(new File(dir, "main.js"), initialContent, "UTF-8");
+                    // Create basic project.json
+                    String projectJson = "{\n" +
+                            "  \"name\": \"NewProject\",\n" +
+                            "  \"versionName\": \"1.0.0\",\n" +
+                            "  \"versionCode\": 1,\n" +
+                            "  \"packageName\": \"com.example.newproject\",\n" +
+                            "  \"main\": \"main.js\"\n" +
+                            "}";
+                    FileUtils.writeStringToFile(new File(dir, "project.json"), projectJson, "UTF-8");
+                    Toast.makeText(getContext(), "Project created", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
 
         }

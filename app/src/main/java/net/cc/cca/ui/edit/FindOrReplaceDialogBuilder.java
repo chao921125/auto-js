@@ -53,7 +53,7 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                onTextChanged();
+                handleTextChanged(s);
             }
             @Override
             public void afterTextChanged(android.text.Editable s) {}
@@ -79,14 +79,14 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
         }
     }
 
-    void onTextChanged() {
-        if (binding.replacement.getText().length() > 0) {
+    void handleTextChanged(CharSequence s) {
+        if (s.length() > 0) {
             binding.checkboxReplace.setChecked(true);
         }
     }
 
     private void findOrReplace(MaterialDialog dialog) {
-        String keywords = mKeywordsEditText.getText().toString();
+        String keywords = binding.keywords.getText().toString();
         if (keywords.isEmpty()) {
             return;
         }
@@ -105,7 +105,7 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
             dialog.dismiss();
         } catch (CodeEditor.CheckedPatternSyntaxException e) {
             e.printStackTrace();
-            mKeywordsEditText.setError(getContext().getString(R.string.error_pattern_syntax));
+            binding.keywords.setError(getContext().getString(R.string.error_pattern_syntax));
         }
 
     }

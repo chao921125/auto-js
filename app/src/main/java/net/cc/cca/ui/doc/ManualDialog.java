@@ -68,7 +68,7 @@ public class ManualDialog {
     void viewInNewActivity() {
         mDialog.dismiss();
         Intent intent = new Intent(mContext, DocumentationActivity.class);
-        intent.putExtra(DocumentationActivity.EXTRA_URL, mEWebView.getWebView().getUrl());
+        intent.putExtra(DocumentationActivity.EXTRA_URL, binding.ewebView.getWebView().getUrl());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
     }

@@ -25,6 +25,7 @@ import net.cc.cca.storage.file.TmpScriptFiles;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 import net.cc.cca.tool.Observers;
 import net.cc.cca.ui.BaseActivity;
+import net.cc.cca.ui.main.MainActivity;
 
 import java.io.File;
 import java.io.IOException;

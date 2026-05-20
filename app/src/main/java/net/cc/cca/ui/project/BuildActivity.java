@@ -198,12 +198,12 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
         }
         binding.outputPath.setText(new File(mSource, mProjectConfig.getBuildDir()).getPath());
         binding.appConfig.setVisibility(View.GONE);
-        mSourcePathContainer.setVisibility(View.GONE);
+        binding.sourcePathContainer.setVisibility(View.GONE);
     }
 
     void selectOutputDirPath() {
         String initialDir = new File(binding.outputPath.getText().toString()).exists() ?
-                mOutputPath.getText().toString() : Pref.getScriptDirPath();
+                binding.outputPath.getText().toString() : Pref.getScriptDirPath();
         new FileChooserDialogBuilder(this)
                 .title(R.string.text_output_apk_path)
                 .dir(initialDir)
@@ -302,7 +302,7 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
         appConfig.setUseOpenCv(binding.useOpenCv.isChecked());
         appConfig.setUsePaddleOcr(binding.usePaddleOcr.isChecked());
         appConfig.setUseMlKitOcr(binding.useMlKitOcr.isChecked());
-        appConfig.setUseOnnx(binding.useOnnx.isChecked());
+        appConfig.setUseOnnx(binding.useOnnxRuntime.isChecked());
         Set<String> enabledPermission = new HashSet<>();
         for (Option option : options) {
             if (option.isSelected()) {
