@@ -9,11 +9,11 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import net.cc.cca.R;
+import net.cc.cca.databinding.FloatingManualDialogBinding;
 import net.cc.cca.ui.widget.EWebView;
+import net.cc.cca.ui.doc.DocumentationActivity;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import android.content.Intent;
 
 /**
  * Created by Stardust on 2017/10/24.
@@ -21,22 +21,14 @@ import butterknife.OnClick;
 
 public class ManualDialog {
 
-    @BindView(R.id.title)
-    TextView mTitle;
-
-    @BindView(R.id.eweb_view)
-    EWebView mEWebView;
-
-    @BindView(R.id.pin_to_left)
-    View mPinToLeft;
-
+    FloatingManualDialogBinding binding;
     Dialog mDialog;
     private Context mContext;
 
     public ManualDialog(Context context) {
         mContext = context;
-        View view = View.inflate(context, R.layout.floating_manual_dialog, null);
-        ButterKnife.bind(this, view);
+        binding = FloatingManualDialogBinding.inflate(android.view.LayoutInflater.from(context));
+        View view = binding.getRoot();
         mDialog = new MaterialDialog.Builder(context)
                 .customView(view, false)
                 .build();
@@ -45,17 +37,17 @@ public class ManualDialog {
 
 
     public ManualDialog title(String title) {
-        mTitle.setText(title);
+        binding.title.setText(title);
         return this;
     }
 
     public ManualDialog url(String url) {
-        mEWebView.getWebView().loadUrl(url);
+        binding.ewebView.getWebView().loadUrl(url);
         return this;
     }
 
     public ManualDialog pinToLeft(View.OnClickListener listener) {
-        mPinToLeft.setOnClickListener(v -> {
+        binding.pinToLeft.setOnClickListener(v -> {
             mDialog.dismiss();
             listener.onClick(v);
         });
@@ -64,20 +56,21 @@ public class ManualDialog {
 
     public ManualDialog show() {
         mDialog.show();
+        binding.close.setOnClickListener(v -> close());
+        binding.fullscreen.setOnClickListener(v -> viewInNewActivity());
         return this;
     }
 
-    @OnClick(R.id.close)
     void close() {
         mDialog.dismiss();
     }
 
-    @OnClick(R.id.fullscreen)
     void viewInNewActivity() {
         mDialog.dismiss();
-        DocumentationActivity_.intent(mContext)
-                .extra(DocumentationActivity.EXTRA_URL, mEWebView.getWebView().getUrl())
-                .start();
+        Intent intent = new Intent(mContext, DocumentationActivity.class);
+        intent.putExtra(DocumentationActivity.EXTRA_URL, mEWebView.getWebView().getUrl());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
     }
 
 }

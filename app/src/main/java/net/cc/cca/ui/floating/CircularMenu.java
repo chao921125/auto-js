@@ -27,7 +27,7 @@ import net.cc.cca.tool.RootTool;
 import net.cc.cca.ui.common.NotAskAgainDialog;
 import net.cc.cca.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import net.cc.cca.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
-import net.cc.cca.ui.main.MainActivity_;
+import net.cc.cca.ui.main.MainActivity;
 import net.cc.cca.ui.explorer.ExplorerView;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 
@@ -40,10 +40,6 @@ import com.stardust.view.accessibility.NodeInfo;
 import org.greenrobot.eventbus.EventBus;
 import org.jdeferred.Deferred;
 import org.jdeferred.impl.DeferredObject;
-
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Optional;
 
 /**
  * Created by Stardust on 2017/10/18.
@@ -122,7 +118,7 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
             @Override
             public CircularActionMenu inflateMenuItems(FloatyService service, CircularMenuWindow window) {
                 CircularActionMenu menu = (CircularActionMenu) View.inflate(new ContextThemeWrapper(service, R.style.AppTheme), R.layout.circular_action_menu, null);
-                ButterKnife.bind(CircularMenu.this, menu);
+                setupMenuClickListeners(menu);
                 return menu;
             }
         });
@@ -131,8 +127,23 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     }
 
 
-    @Optional
-    @OnClick(R.id.script_list)
+    private void setupMenuClickListeners(CircularActionMenu menu) {
+        menu.findViewById(R.id.script_list).setOnClickListener(v -> showScriptList());
+        menu.findViewById(R.id.record).setOnClickListener(v -> startRecord());
+        menu.findViewById(R.id.layout_inspect).setOnClickListener(v -> inspectLayout());
+        menu.findViewById(R.id.layout_bounds).setOnClickListener(v -> showLayoutBounds());
+        menu.findViewById(R.id.layout_hierarchy).setOnClickListener(v -> showLayoutHierarchy());
+        menu.findViewById(R.id.stop_all_scripts).setOnClickListener(v -> stopAllScripts());
+        menu.findViewById(R.id.settings).setOnClickListener(v -> settings());
+        menu.findViewById(R.id.accessibility_service).setOnClickListener(v -> enableAccessibilityService());
+        menu.findViewById(R.id.package_name).setOnClickListener(v -> copyPackageName());
+        menu.findViewById(R.id.class_name).setOnClickListener(v -> copyActivityName());
+        menu.findViewById(R.id.open_launcher).setOnClickListener(v -> openLauncher());
+        menu.findViewById(R.id.pointer_location).setOnClickListener(v -> togglePointerLocation());
+        menu.findViewById(R.id.exit).setOnClickListener(v -> close());
+    }
+
+
     void showScriptList() {
         mWindow.collapse();
         ExplorerView explorerView = new ExplorerView(mContext);
@@ -149,8 +160,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
 
     }
 
-    @Optional
-    @OnClick(R.id.record)
     void startRecord() {
         mWindow.collapse();
         if (!RootTool.isRootAvailable()) {
@@ -187,8 +196,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
         mRecorder.stop();
     }
 
-    @Optional
-    @OnClick(R.id.layout_inspect)
     void inspectLayout() {
         mWindow.collapse();
         mLayoutInspectDialog = new OperationDialogBuilder(mContext)
@@ -201,15 +208,11 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
         DialogUtils.showDialog(mLayoutInspectDialog);
     }
 
-    @Optional
-    @OnClick(R.id.layout_bounds)
     void showLayoutBounds() {
         inspectLayout(LayoutBoundsFloatyWindow::new);
     }
 
 
-    @Optional
-    @OnClick(R.id.layout_hierarchy)
     void showLayoutHierarchy() {
         inspectLayout(LayoutHierarchyFloatyWindow::new);
     }
@@ -242,8 +245,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     }
 
 
-    @Optional
-    @OnClick(R.id.stop_all_scripts)
     void stopAllScripts() {
         mWindow.collapse();
         AutoJs.getInstance().getScriptEngineService().stopAllAndToast();
@@ -257,8 +258,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     }
 
 
-    @Optional
-    @OnClick(R.id.settings)
     void settings() {
         mWindow.collapse();
         AutoJs.getInstance().getInfoProvider().getPackageAndActivityInfoByA11y();
@@ -280,8 +279,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
     }
 
 
-    @Optional
-    @OnClick(R.id.accessibility_service)
     void enableAccessibilityService() {
         dismissSettingsDialog();
         AccessibilityServiceTool.enableAccessibilityService();
@@ -295,8 +292,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
         mSettingsDialog = null;
     }
 
-    @Optional
-    @OnClick(R.id.package_name)
     void copyPackageName() {
         dismissSettingsDialog();
         if (TextUtils.isEmpty(mRunningPackage))
@@ -305,8 +300,6 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
         Toast.makeText(mContext, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
     }
 
-    @Optional
-    @OnClick(R.id.class_name)
     void copyActivityName() {
         dismissSettingsDialog();
         if (TextUtils.isEmpty(mRunningActivity))
@@ -315,23 +308,17 @@ public class CircularMenu implements Recorder.OnStateChangedListener, LayoutInsp
         Toast.makeText(mContext, R.string.text_already_copy_to_clip, Toast.LENGTH_SHORT).show();
     }
 
-    @Optional
-    @OnClick(R.id.open_launcher)
     void openLauncher() {
         dismissSettingsDialog();
-        mContext.startActivity(new Intent(mContext, MainActivity_.class)
+        mContext.startActivity(new Intent(mContext, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    @Optional
-    @OnClick(R.id.pointer_location)
     void togglePointerLocation() {
         dismissSettingsDialog();
         RootTool.togglePointerLocation();
     }
 
-    @Optional
-    @OnClick(R.id.exit)
     public void close() {
         dismissSettingsDialog();
         try {

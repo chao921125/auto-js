@@ -16,10 +16,10 @@ import net.cc.cca.R;
 import net.cc.cca.model.indices.AndroidClass;
 import net.cc.cca.model.indices.ClassSearchingItem;
 import net.cc.cca.ui.project.BuildActivity;
-import net.cc.cca.ui.project.BuildActivity_;
+import net.cc.cca.ui.project.BuildActivity;
 import net.cc.cca.ui.common.NotAskAgainDialog;
 import net.cc.cca.ui.edit.editor.CodeEditor;
-import net.cc.cca.ui.log.LogActivity_;
+import net.cc.cca.ui.log.LogActivity;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import com.stardust.util.ClipboardUtil;
@@ -189,9 +189,9 @@ public class EditorMenu {
     }
 
     private void startBuildApkActivity() {
-        BuildActivity_.intent(mContext)
-                .extra(BuildActivity.EXTRA_SOURCE, mEditorView.getUri().getPath())
-                .start();
+        Intent intent = new Intent(mContext, BuildActivity.class);
+        intent.putExtra(BuildActivity.EXTRA_SOURCE, mEditorView.getUri().getPath());
+        mContext.startActivity(intent);
     }
 
 
@@ -292,7 +292,8 @@ public class EditorMenu {
 
 
     private void showLog() {
-        LogActivity_.intent(mContext).start();
+        Intent intent = new Intent(mContext, LogActivity.class);
+        mContext.startActivity(intent);
     }
 
     private void showConsole() {

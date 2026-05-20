@@ -55,14 +55,14 @@ public class AboutActivity extends BaseActivity {
     }
 
     private void setupClickListeners() {
-        binding.github.setOnClickListener(v -> openGitHub());
-        binding.newGithub.setOnClickListener(v -> openModifiedGitHub());
-        binding.qq.setOnClickListener(v -> openQQToChatWithMe());
+        findViewById(R.id.github).setOnClickListener(v -> openGitHub());
+        findViewById(R.id.new_github).setOnClickListener(v -> openModifiedGitHub());
+        findViewById(R.id.qq).setOnClickListener(v -> openQQToChatWithMe());
         binding.iconContainer.setOnClickListener(v -> showDebugInfo());
-        binding.email.setOnClickListener(v -> openEmailToSendMe());
+        findViewById(R.id.email).setOnClickListener(v -> openEmailToSendMe());
         binding.icon.setOnClickListener(v -> lol());
-        binding.developer.setOnClickListener(v -> hhh());
-        binding.modifier.setOnClickListener(v -> hhhh());
+        findViewById(R.id.developer).setOnClickListener(v -> hhh());
+        findViewById(R.id.modifier).setOnClickListener(v -> hhhh());
     }
 
     @SuppressLint("SetTextI18n")

@@ -23,8 +23,6 @@ import net.cc.cca.ui.widget.EWebView;
 
 import java.util.regex.Pattern;
 
-import butterknife.OnClick;
-import butterknife.Optional;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -64,9 +62,6 @@ public class CommunityWebView extends EWebView {
         mBottomSheetDialog.show();
     }
 
-    @SuppressLint("CheckResult")
-    @Optional
-    @OnClick(R.id.save)
     void save() {
         dismissBottomSheetDialog();
         new ScriptOperations(getContext(), CommunityWebView.this)
@@ -83,9 +78,6 @@ public class CommunityWebView extends EWebView {
                         });
     }
 
-    @SuppressLint("CheckResult")
-    @Optional
-    @OnClick(R.id.run)
     void run() {
         dismissBottomSheetDialog();
         new ScriptOperations(getContext(), CommunityWebView.this)

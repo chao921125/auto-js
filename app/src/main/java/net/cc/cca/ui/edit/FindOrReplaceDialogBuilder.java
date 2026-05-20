@@ -11,13 +11,9 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.cc.cca.R;
+import net.cc.cca.databinding.DialogFindOrReplaceBinding;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 import net.cc.cca.ui.edit.editor.CodeEditor;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnTextChanged;
 
 /**
  * Created by Stardust on 2017/9/28.
@@ -27,21 +23,7 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
 
     private static final String KEY_KEYWORDS = "...";
 
-    @BindView(R.id.checkbox_regex)
-    CheckBox mRegexCheckBox;
-
-    @BindView(R.id.checkbox_replace)
-    CheckBox mReplaceCheckBox;
-
-    @BindView(R.id.checkbox_replace_all)
-    CheckBox mReplaceAllCheckBox;
-
-    @BindView(R.id.keywords)
-    EditText mKeywordsEditText;
-
-    @BindView(R.id.replacement)
-    EditText mReplacementEditText;
-
+    DialogFindOrReplaceBinding binding;
     private EditorView mEditorView;
 
     public FindOrReplaceDialogBuilder(@NonNull Context context, EditorView editorView) {
@@ -58,38 +40,48 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
     }
 
     private void setupViews() {
-        View view = View.inflate(context, R.layout.dialog_find_or_replace, null);
-        ButterKnife.bind(this, view);
+        binding = DialogFindOrReplaceBinding.inflate(android.view.LayoutInflater.from(context));
+        View view = binding.getRoot();
         customView(view, true);
         positiveText(R.string.ok);
         negativeText(R.string.cancel);
         title(R.string.text_find_or_replace);
+        
+        binding.checkboxReplaceAll.setOnCheckedChangeListener((buttonView, isChecked) -> syncWithReplaceCheckBox());
+        binding.replacement.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onTextChanged();
+            }
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
     }
 
 
     private void storeState() {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
-                .putString(KEY_KEYWORDS, mKeywordsEditText.getText().toString())
+                .putString(KEY_KEYWORDS, binding.keywords.getText().toString())
                 .apply();
     }
 
 
     private void restoreState() {
-        mKeywordsEditText.setText(PreferenceManager.getDefaultSharedPreferences(getContext())
+        binding.keywords.setText(PreferenceManager.getDefaultSharedPreferences(getContext())
                 .getString(KEY_KEYWORDS, ""));
     }
 
-    @OnCheckedChanged(R.id.checkbox_replace_all)
     void syncWithReplaceCheckBox() {
-        if (mReplaceAllCheckBox.isChecked() && !mReplaceCheckBox.isChecked()) {
-            mReplaceCheckBox.setChecked(true);
+        if (binding.checkboxReplaceAll.isChecked() && !binding.checkboxReplace.isChecked()) {
+            binding.checkboxReplace.setChecked(true);
         }
     }
 
-    @OnTextChanged(R.id.replacement)
     void onTextChanged() {
-        if (mReplacementEditText.getText().length() > 0) {
-            mReplaceCheckBox.setChecked(true);
+        if (binding.replacement.getText().length() > 0) {
+            binding.checkboxReplace.setChecked(true);
         }
     }
 
@@ -99,12 +91,12 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
             return;
         }
         try {
-            boolean usingRegex = mRegexCheckBox.isChecked();
-            if (!mReplaceCheckBox.isChecked()) {
+            boolean usingRegex = binding.checkboxRegex.isChecked();
+            if (!binding.checkboxReplace.isChecked()) {
                 mEditorView.find(keywords, usingRegex);
             } else {
-                String replacement = mReplacementEditText.getText().toString();
-                if (mReplaceAllCheckBox.isChecked()) {
+                String replacement = binding.replacement.getText().toString();
+                if (binding.checkboxReplaceAll.isChecked()) {
                     mEditorView.replaceAll(keywords, replacement, usingRegex);
                 } else {
                     mEditorView.replace(keywords, replacement, usingRegex);
@@ -120,7 +112,7 @@ public class FindOrReplaceDialogBuilder extends ThemeColorMaterialDialogBuilder 
 
     public FindOrReplaceDialogBuilder setQueryIfNotEmpty(String s) {
         if (!TextUtils.isEmpty(s))
-            mKeywordsEditText.setText(s);
+            binding.keywords.setText(s);
         return this;
     }
 }

@@ -28,8 +28,8 @@ import net.cc.cca.ui.floating.FloatyWindowManger;
 import net.cc.cca.ui.floating.FullScreenFloatyWindow;
 import net.cc.cca.ui.floating.layoutinspector.LayoutBoundsFloatyWindow;
 import net.cc.cca.ui.floating.layoutinspector.LayoutHierarchyFloatyWindow;
-import net.cc.cca.ui.log.LogActivity_;
-import net.cc.cca.ui.settings.SettingsActivity_;
+import net.cc.cca.ui.log.LogActivity;
+import net.cc.cca.ui.settings.SettingsActivity;
 
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.LayoutInspector;
@@ -194,8 +194,8 @@ public class AutoJs extends net.cc.stardust.AutoJs {
     @Override
     protected ScriptRuntime createRuntime() {
         ScriptRuntime runtime = super.createRuntime();
-        runtime.putProperty("class.settings", SettingsActivity_.class);
-        runtime.putProperty("class.console", LogActivity_.class);
+        runtime.putProperty("class.settings", SettingsActivity.class);
+        runtime.putProperty("class.console", LogActivity.class);
         runtime.putProperty("broadcast.inspect_layout_bounds", LayoutBoundsFloatyWindow.class.getName());
         runtime.putProperty("broadcast.inspect_layout_hierarchy", LayoutHierarchyFloatyWindow.class.getName());
         return runtime;

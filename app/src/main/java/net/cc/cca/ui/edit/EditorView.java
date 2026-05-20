@@ -38,11 +38,9 @@ import com.stardust.util.BackPressedHandler;
 import com.stardust.util.Callback;
 import com.stardust.util.ViewUtils;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.Pref;
 import net.cc.cca.R;
+import net.cc.cca.databinding.EditorViewBinding;
 import net.cc.cca.autojs.AutoJs;
 import net.cc.cca.model.autocomplete.AutoCompletion;
 import net.cc.cca.model.autocomplete.CodeCompletion;
@@ -61,13 +59,10 @@ import net.cc.cca.ui.edit.keyboard.FunctionsKeyboardView;
 import net.cc.cca.ui.edit.theme.Theme;
 import net.cc.cca.ui.edit.theme.Themes;
 import net.cc.cca.ui.edit.toolbar.DebugToolbarFragment;
-import net.cc.cca.ui.edit.toolbar.DebugToolbarFragment_;
 import net.cc.cca.ui.edit.toolbar.NormalToolbarFragment;
-import net.cc.cca.ui.edit.toolbar.NormalToolbarFragment_;
 import net.cc.cca.ui.edit.toolbar.SearchToolbarFragment;
-import net.cc.cca.ui.edit.toolbar.SearchToolbarFragment_;
 import net.cc.cca.ui.edit.toolbar.ToolbarFragment;
-import net.cc.cca.ui.log.LogActivity_;
+import net.cc.cca.ui.log.LogActivity;
 import net.cc.cca.ui.widget.EWebView;
 import net.cc.cca.ui.widget.SimpleTextWatcher;
 
@@ -87,7 +82,6 @@ import static net.cc.cca.model.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 /**
  * Created by Stardust on 2017/9/28.
  */
-@EViewGroup(R.layout.editor_view)
 public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintClickListener, FunctionsKeyboardView.ClickCallback, ToolbarFragment.OnMenuItemClickListener {
 
     public static final String EXTRA_PATH = "path";
@@ -101,32 +95,24 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
      */
     public static final Long MAX_EDITABLE_SIZE = 500 * 1024L;
 
-    @ViewById(R.id.editor)
-    CodeEditor mEditor;
+    private EditorViewBinding binding;
+    private CodeEditor mEditor;
 
-    @ViewById(R.id.code_completion_bar)
-    CodeCompletionBar mCodeCompletionBar;
+    private CodeCompletionBar mCodeCompletionBar;
 
-    @ViewById(R.id.input_method_enhance_bar)
-    View mInputMethodEnhanceBar;
+    private View mInputMethodEnhanceBar;
 
-    @ViewById(R.id.symbol_bar)
-    CodeCompletionBar mSymbolBar;
+    private CodeCompletionBar mSymbolBar;
 
-    @ViewById(R.id.functions)
-    ImageView mShowFunctionsButton;
+    private ImageView mShowFunctionsButton;
 
-    @ViewById(R.id.functions_keyboard)
-    FunctionsKeyboardView mFunctionsKeyboard;
+    private FunctionsKeyboardView mFunctionsKeyboard;
 
-    @ViewById(R.id.debug_bar)
-    DebugBar mDebugBar;
+    private DebugBar mDebugBar;
 
-    @ViewById(R.id.docs)
-    EWebView mDocsWebView;
+    private EWebView mDocsWebView;
 
-    @ViewById(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
+    private DrawerLayout mDrawerLayout;
 
     private String mName;
     private Uri mUri;
@@ -159,8 +145,28 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     private SparseBooleanArray mMenuItemStatus = new SparseBooleanArray();
     private String mRestoredText;
-    private NormalToolbarFragment mNormalToolbar = new NormalToolbarFragment_();
+    private NormalToolbarFragment mNormalToolbar = new NormalToolbarFragment();
     private boolean mDebugging = false;
+
+    public static EditorView inflate(Context context) {
+        EditorViewBinding binding = EditorViewBinding.inflate(android.view.LayoutInflater.from(context));
+        EditorView view = new EditorView(context);
+        view.binding = binding;
+        view.initViews();
+        return view;
+    }
+
+    private void initViews() {
+        mEditor = binding.editor;
+        mCodeCompletionBar = binding.codeCompletionBar;
+        mInputMethodEnhanceBar = binding.inputMethodEnhanceBar;
+        mSymbolBar = binding.symbolBar;
+        mShowFunctionsButton = binding.functions;
+        mFunctionsKeyboard = binding.functionsKeyboard;
+        mDebugBar = binding.debugBar;
+        mDocsWebView = binding.docs;
+        mDrawerLayout = binding.drawerLayout;
+    }
 
     public EditorView(Context context) {
         super(context);
@@ -287,7 +293,6 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         return mMenuItemStatus.get(id, defValue);
     }
 
-    @AfterViews
     void init() {
         //setTheme(Theme.getDefault(getContext()));
         setUpEditor();
@@ -578,9 +583,10 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     private void showSearchToolbar(boolean showReplaceItem) {
-        SearchToolbarFragment searchToolbarFragment = SearchToolbarFragment_.builder()
-                .arg(SearchToolbarFragment.ARGUMENT_SHOW_REPLACE_ITEM, showReplaceItem)
-                .build();
+        SearchToolbarFragment searchToolbarFragment = new SearchToolbarFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(SearchToolbarFragment.ARGUMENT_SHOW_REPLACE_ITEM, showReplaceItem);
+        searchToolbarFragment.setArguments(args);
         searchToolbarFragment.setOnMenuItemClickListener(this);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.toolbar_menu, searchToolbarFragment)
@@ -598,8 +604,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
 
     public void debug() {
-        DebugToolbarFragment debugToolbarFragment = DebugToolbarFragment_.builder()
-                .build();
+        DebugToolbarFragment debugToolbarFragment = new DebugToolbarFragment();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.toolbar_menu, debugToolbarFragment)
                 .commit();
@@ -623,7 +628,10 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     private void showErrorMessage(String msg) {
         Snackbar.make(EditorView.this, getResources().getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG)
-                .setAction(R.string.text_detail, v -> LogActivity_.intent(getContext()).start())
+                .setAction(R.string.text_detail, v -> {
+                    Intent intent = new Intent(getContext(), LogActivity.class);
+                    getContext().startActivity(intent);
+                })
                 .show();
     }
 

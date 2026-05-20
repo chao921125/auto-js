@@ -37,7 +37,7 @@ import net.cc.cca.model.script.Scripts;
 import net.cc.cca.network.download.DownloadManager;
 import net.cc.cca.ui.filechooser.FileChooserDialogBuilder;
 import net.cc.cca.ui.shortcut.ShortcutCreateActivity;
-import net.cc.cca.ui.timing.TimedTaskSettingActivity_;
+import net.cc.cca.ui.timing.TimedTaskSettingActivity;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 
 import org.reactivestreams.Publisher;
@@ -370,10 +370,10 @@ public class ScriptOperations {
     }
 
     public void timedTask(ScriptFile scriptFile) {
-        TimedTaskSettingActivity_.intent(mContext)
-                .extra(ScriptIntents.EXTRA_KEY_PATH, scriptFile.getPath())
-                .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .start();
+        Intent intent = new Intent(mContext, TimedTaskSettingActivity.class);
+        intent.putExtra(ScriptIntents.EXTRA_KEY_PATH, scriptFile.getPath());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
     }
 
 

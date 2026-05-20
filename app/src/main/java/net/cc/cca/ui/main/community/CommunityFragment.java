@@ -7,14 +7,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.webkit.WebView;
 
 import net.cc.cca.R;
+import net.cc.cca.databinding.FragmentCommunityBinding;
 import net.cc.cca.network.NodeBB;
 import net.cc.cca.ui.main.QueryEvent;
 import net.cc.cca.ui.main.ViewPagerFragment;
 import com.stardust.util.BackPressedHandler;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -23,7 +21,6 @@ import java.net.URLEncoder;
 /**
  * Created by Stardust on 2017/8/22.
  */
-@EFragment(R.layout.fragment_community)
 public class CommunityFragment extends ViewPagerFragment implements BackPressedHandler {
 
     public static class LoadUrl {
@@ -45,13 +42,25 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
 
     private static final String POSTS_PAGE_PATTERN = "[\\S\\s]+/topic/[0-9]+/[\\S\\s]+";
 
-    @ViewById(R.id.eweb_view)
-    CommunityWebView mEWebView;
-    WebView mWebView;
+    private FragmentCommunityBinding binding;
+    private WebView mWebView;
 
     public CommunityFragment() {
         super(0);
         setArguments(new Bundle());
+    }
+
+    @Nullable
+    @Override
+    public android.view.View onCreateView(android.view.LayoutInflater inflater, @Nullable android.view.ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentCommunityBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpViews();
     }
 
     @Override
@@ -60,9 +69,8 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
         EventBus.getDefault().register(this);
     }
 
-    @AfterViews
     void setUpViews() {
-        mWebView = mEWebView.getWebView();
+        mWebView = binding.ewebView.getWebView();
         String url = "https://www.autojs.org/";
         Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");
         if (savedWebViewState != null) {

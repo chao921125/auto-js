@@ -12,11 +12,9 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import net.cc.cca.R;
+import net.cc.cca.databinding.OperationDialogItemBinding;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Stardust on 2017/6/26.
@@ -43,12 +41,8 @@ public class OperationDialogBuilder extends MaterialDialog.Builder {
             @Override
             public void onBindViewHolder(ViewHolder holder, int position) {
                 holder.itemView.setId(mIds.get(position));
-                holder.text.setText(mTexts.get(position));
-                holder.icon.setImageResource(mIcons.get(position));
-                if (mOnItemClickTarget != null) {
-                    //// TODO: 2017/6/26   效率
-                    ButterKnife.bind(mOnItemClickTarget, holder.itemView);
-                }
+                holder.binding.text.setText(mTexts.get(position));
+                holder.binding.icon.setImageResource(mIcons.get(position));
             }
 
             @Override
@@ -77,15 +71,11 @@ public class OperationDialogBuilder extends MaterialDialog.Builder {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.icon)
-        ImageView icon;
-        @BindView(R.id.text)
-        TextView text;
+        OperationDialogItemBinding binding;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
-
+            binding = OperationDialogItemBinding.bind(itemView);
         }
 
     }

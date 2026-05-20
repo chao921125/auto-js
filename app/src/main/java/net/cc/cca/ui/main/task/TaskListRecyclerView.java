@@ -25,19 +25,17 @@ import net.cc.stardust.workground.WrapContentLinearLayoutManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
 import net.cc.cca.R;
+import net.cc.cca.databinding.TaskListRecyclerViewItemBinding;
 import net.cc.cca.autojs.AutoJs;
 import net.cc.cca.storage.database.ModelChange;
 import net.cc.cca.timing.TimedTaskManager;
 import net.cc.cca.ui.timing.TimedTaskSettingActivity;
-import net.cc.cca.ui.timing.TimedTaskSettingActivity_;
+import net.cc.cca.ui.timing.TimedTaskSettingActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.recyclerview.widget.ThemeColorRecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
@@ -204,20 +202,22 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
 
     class TaskViewHolder extends ChildViewHolder<Task> {
 
-        @BindView(R.id.first_char)
         TextView mFirstChar;
-        @BindView(R.id.name)
         TextView mName;
-        @BindView(R.id.desc)
         TextView mDesc;
 
         private Task mTask;
         private GradientDrawable mFirstCharBackground;
+        private TaskListRecyclerViewItemBinding binding;
 
         TaskViewHolder(View itemView) {
             super(itemView);
+            binding = TaskListRecyclerViewItemBinding.bind(itemView);
+            mFirstChar = binding.firstChar;
+            mName = binding.name;
+            mDesc = binding.desc;
             itemView.setOnClickListener(this::onItemClick);
-            ButterKnife.bind(this, itemView);
+            binding.stop.setOnClickListener(v -> stop());
             mFirstCharBackground = (GradientDrawable) mFirstChar.getBackground();
         }
 
@@ -235,7 +235,6 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
         }
 
 
-        @OnClick(R.id.stop)
         void stop() {
             if (mTask != null) {
                 mTask.cancel();
@@ -247,10 +246,10 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
                 Task.PendingTask task = (Task.PendingTask) mTask;
                 String extra = task.getTimedTask() == null ? TimedTaskSettingActivity.EXTRA_INTENT_TASK_ID
                         : TimedTaskSettingActivity.EXTRA_TASK_ID;
-                TimedTaskSettingActivity_.intent(getContext())
-                        .extra(extra, task.getId())
-                        .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .start();
+                Intent intent = new Intent(getContext(), TimedTaskSettingActivity.class);
+                intent.putExtra(extra, task.getId());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
             }
         }
     }

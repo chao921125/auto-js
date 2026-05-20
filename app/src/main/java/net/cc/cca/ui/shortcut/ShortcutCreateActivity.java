@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.cc.cca.R;
+import net.cc.cca.databinding.ShortcutCreateDialogBinding;
 import net.cc.cca.external.ScriptIntents;
 import net.cc.cca.external.shortcut.Shortcut;
 import net.cc.cca.external.shortcut.ShortcutActivity;
@@ -28,9 +29,6 @@ import net.cc.cca.model.script.ScriptFile;
 import net.cc.cca.tool.BitmapTool;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -45,15 +43,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     private static final String LOG_TAG = "ShortcutCreateActivity";
     private ScriptFile mScriptFile;
     private boolean mIsDefaultIcon = true;
-
-    @BindView(R.id.name)
-    TextView mName;
-
-    @BindView(R.id.icon)
-    ImageView mIcon;
-
-    @BindView(R.id.use_android_n_shortcut)
-    CheckBox mUseAndroidNShortcut;
+    private ShortcutCreateDialogBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,9 +53,10 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     }
 
     private void showDialog() {
-        View view = View.inflate(this, R.layout.shortcut_create_dialog, null);
-        ButterKnife.bind(this, view);
-        mName.setText(mScriptFile.getSimplifiedName());
+        binding = ShortcutCreateDialogBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        binding.name.setText(mScriptFile.getSimplifiedName());
+        binding.icon.setOnClickListener(v -> selectIcon());
         new ThemeColorMaterialDialogBuilder(this)
                 .customView(view, false)
                 .title(R.string.text_send_shortcut)
@@ -79,11 +70,10 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     }
 
 
-    @OnClick(R.id.icon)
     void selectIcon() {
-        ShortcutIconSelectActivity_.intent(this)
-                .flags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-                .startForResult(21209);
+        Intent intent = new Intent(this, ShortcutIconSelectActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        startActivityForResult(intent, 21209);
     }
 
 
@@ -97,7 +87,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
         if (mIsDefaultIcon) {
             icon = Icon.createWithResource(this, R.drawable.ic_file_type_js);
         } else {
-            Bitmap bitmap = BitmapTool.drawableToBitmap(mIcon.getDrawable());
+            Bitmap bitmap = BitmapTool.drawableToBitmap(binding.icon.getDrawable());
             icon = Icon.createWithBitmap(bitmap);
         }
         PersistableBundle extras = new PersistableBundle(1);
@@ -106,7 +96,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
                 .putExtra(ScriptIntents.EXTRA_KEY_PATH, mScriptFile.getPath())
                 .setAction(Intent.ACTION_MAIN);
 
-        ShortcutManager.getInstance(this).addPinnedShortcut(mName.getText(), mScriptFile.getPath(), icon, intent);
+        ShortcutManager.getInstance(this).addPinnedShortcut(binding.name.getText(), mScriptFile.getPath(), icon, intent);
     }
 
 
@@ -120,7 +110,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
         String packageName = data.getStringExtra(ShortcutIconSelectActivity.EXTRA_PACKAGE_NAME);
         if (packageName != null) {
             try {
-                mIcon.setImageDrawable(getPackageManager().getApplicationIcon(packageName));
+                binding.icon.setImageDrawable(getPackageManager().getApplicationIcon(packageName));
                 mIsDefaultIcon = false;
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
@@ -135,7 +125,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((bitmap -> {
-                    mIcon.setImageBitmap(bitmap);
+                    binding.icon.setImageBitmap(bitmap);
                     mIsDefaultIcon = false;
                 }), error -> {
                     Log.e(LOG_TAG, "decode stream", error);

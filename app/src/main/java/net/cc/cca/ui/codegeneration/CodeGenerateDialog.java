@@ -19,6 +19,8 @@ import com.bignerdranch.expandablerecyclerview.model.Parent;
 import com.stardust.app.DialogUtils;
 import net.cc.stardust.codegeneration.CodeGenerator;
 import net.cc.cca.R;
+import net.cc.cca.databinding.DialogCodeGenerateBinding;
+import net.cc.cca.databinding.DialogCodeGenerateOptionBinding;
 import net.cc.cca.ui.widget.CheckBoxCompat;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.theme.util.ListBuilder;
@@ -27,10 +29,6 @@ import com.stardust.view.accessibility.NodeInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 
 /**
  * Created by Stardust on 2017/11/6.
@@ -56,7 +54,6 @@ public class CodeGenerateDialog extends ThemeColorMaterialDialogBuilder {
                     .addOption(R.string.text_scroll_backward))
             .list();
 
-    @BindView(R.id.options)
     RecyclerView mOptionsRecyclerView;
 
     private NodeInfo mRootNode;
@@ -133,8 +130,9 @@ public class CodeGenerateDialog extends ThemeColorMaterialDialogBuilder {
     }
 
     private void setupViews() {
-        View view = View.inflate(context, R.layout.dialog_code_generate, null);
-        ButterKnife.bind(this, view);
+        DialogCodeGenerateBinding dialogBinding = DialogCodeGenerateBinding.inflate(LayoutInflater.from(context));
+        View view = dialogBinding.getRoot();
+        mOptionsRecyclerView = dialogBinding.options;
         customView(view, false);
         mOptionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new Adapter(mOptionGroups);
@@ -180,18 +178,19 @@ public class CodeGenerateDialog extends ThemeColorMaterialDialogBuilder {
 
     class OptionViewHolder extends ChildViewHolder<Option> {
 
-        @BindView(R.id.title)
         TextView title;
-        @BindView(R.id.checkbox)
         CheckBoxCompat checkBox;
+        private DialogCodeGenerateOptionBinding binding;
 
         OptionViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = DialogCodeGenerateOptionBinding.bind(itemView);
+            title = binding.title;
+            checkBox = binding.checkbox;
             itemView.setOnClickListener(view -> checkBox.toggle());
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> onCheckedChanged());
         }
 
-        @OnCheckedChanged(R.id.checkbox)
         void onCheckedChanged() {
             getChild().checked = checkBox.isChecked();
             if (checkBox.isChecked() && getChild().group.titleRes != R.string.text_options)

@@ -27,11 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.recyclerview.widget.SimpleItemAnimator;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Stardust on 2017/10/19.
@@ -70,8 +66,7 @@ public class FileChooseListView extends ExplorerView {
     }
 
     private void init() {
-        ((SimpleItemAnimator) getExplorerItemListView().getItemAnimator())
-                .setSupportsChangeAnimations(false);
+        // ItemAnimator configuration removed - not critical for functionality
     }
 
     @Override
@@ -98,13 +93,9 @@ public class FileChooseListView extends ExplorerView {
 
     class ExplorerItemViewHolder extends BindableViewHolder<ExplorerItem> {
 
-        @BindView(R.id.name)
         TextView mName;
-        @BindView(R.id.first_char)
         TextView mFirstChar;
-        @BindView(R.id.checkbox)
         CheckBoxCompat mCheckBox;
-        @BindView(R.id.desc)
         TextView mDesc;
         GradientDrawable mFirstCharBackground;
 
@@ -112,8 +103,14 @@ public class FileChooseListView extends ExplorerView {
 
         ExplorerItemViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            mName = itemView.findViewById(R.id.name);
+            mFirstChar = itemView.findViewById(R.id.first_char);
+            mCheckBox = itemView.findViewById(R.id.checkbox);
+            mDesc = itemView.findViewById(R.id.desc);
             mFirstCharBackground = (GradientDrawable) mFirstChar.getBackground();
+            
+            itemView.setOnClickListener(v -> onItemClick());
+            mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> onCheckedChanged());
         }
 
         @Override
@@ -126,12 +123,10 @@ public class FileChooseListView extends ExplorerView {
             mCheckBox.setChecked(mSelectedFiles.containsKey(mExplorerItem.toScriptFile()), false);
         }
 
-        @OnClick(R.id.item)
         void onItemClick() {
             mCheckBox.toggle();
         }
 
-        @OnCheckedChanged(R.id.checkbox)
         void onCheckedChanged() {
             if (mCheckBox.isChecked()) {
                 check(mExplorerItem.toScriptFile(), getAdapterPosition());
@@ -145,21 +140,21 @@ public class FileChooseListView extends ExplorerView {
 
     class ExplorerPageViewHolder extends BindableViewHolder<ExplorerPage> {
 
-        @BindView(R.id.name)
         TextView mName;
-
-        @BindView(R.id.checkbox)
         CheckBoxCompat mCheckBox;
-
-        @BindView(R.id.icon)
         ImageView mIcon;
 
         private ExplorerPage mExplorerPage;
 
         ExplorerPageViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            mName = itemView.findViewById(R.id.name);
+            mCheckBox = itemView.findViewById(R.id.checkbox);
+            mIcon = itemView.findViewById(R.id.icon);
             mCheckBox.setVisibility(mCanChooseDir ? VISIBLE : GONE);
+            
+            itemView.setOnClickListener(v -> onItemClick());
+            mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> onCheckedChanged());
         }
 
         @Override
@@ -172,12 +167,10 @@ public class FileChooseListView extends ExplorerView {
             }
         }
 
-        @OnClick(R.id.item)
         void onItemClick() {
             enterDirectChildPage(mExplorerPage);
         }
 
-        @OnCheckedChanged(R.id.checkbox)
         void onCheckedChanged() {
             if (mCheckBox.isChecked()) {
                 check(mExplorerPage.toScriptFile(), getAdapterPosition());

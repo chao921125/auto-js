@@ -5,16 +5,17 @@ import androidx.annotation.Nullable;
 
 import android.view.View;
 
-import org.androidannotations.annotations.EFragment;
 import net.cc.cca.R;
 
 import java.util.Arrays;
 import java.util.List;
 
-@EFragment(R.layout.fragment_search_toolbar)
 public class SearchToolbarFragment extends ToolbarFragment {
 
     public static final String ARGUMENT_SHOW_REPLACE_ITEM = "show_replace_item";
+
+    public SearchToolbarFragment() {
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

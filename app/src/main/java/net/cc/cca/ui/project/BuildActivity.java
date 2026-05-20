@@ -19,12 +19,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import net.cc.stardust.project.ProjectConfig;
 import com.stardust.util.IntentUtil;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.Pref;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityBuildBinding;
 import net.cc.cca.build.ApkBuilder;
 import net.cc.cca.build.ApkBuilderPluginHelper;
 import net.cc.cca.external.fileprovider.AppFileProvider;
@@ -34,7 +31,6 @@ import net.cc.cca.tool.BitmapTool;
 import net.cc.cca.ui.BaseActivity;
 import net.cc.cca.ui.filechooser.FileChooserDialogBuilder;
 import net.cc.cca.ui.shortcut.ShortcutIconSelectActivity;
-import net.cc.cca.ui.shortcut.ShortcutIconSelectActivity_;
 
 import java.io.File;
 import java.io.InputStream;
@@ -59,7 +55,6 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Stardust on 2017/10/22.
  */
-@EActivity(R.layout.activity_build)
 public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCallback {
 
     private static final int REQUEST_CODE = 44401;
@@ -69,48 +64,7 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
     private static final String LOG_TAG = "BuildActivity";
     private static final Pattern REGEX_PACKAGE_NAME = Pattern.compile("^([A-Za-z][A-Za-z\\d_]*\\.)+([A-Za-z][A-Za-z\\d_]*)$");
 
-    @ViewById(R.id.source_path)
-    EditText mSourcePath;
-
-    @ViewById(R.id.source_path_container)
-    View mSourcePathContainer;
-
-    @ViewById(R.id.output_path)
-    EditText mOutputPath;
-
-    @ViewById(R.id.app_name)
-    EditText mAppName;
-
-    @ViewById(R.id.package_name)
-    EditText mPackageName;
-
-    @ViewById(R.id.version_name)
-    EditText mVersionName;
-
-    @ViewById(R.id.version_code)
-    EditText mVersionCode;
-
-    @ViewById(R.id.icon)
-    ImageView mIcon;
-
-    @ViewById(R.id.app_config)
-    CardView mAppConfig;
-
-    @ViewById(R.id.use_open_cv)
-    CheckBox mUseOpenCv;
-
-    @ViewById(R.id.use_paddle_ocr)
-    CheckBox mUsePaddleOcr;
-
-    @ViewById(R.id.use_ml_kit_ocr)
-    CheckBox mUseMlKitOcr;
-
-    @ViewById(R.id.use_onnx_runtime)
-    CheckBox mUseOnnx;
-
-    @ViewById(R.id.recycler_view)
-    RecyclerView recyclerView;
-
+    private ActivityBuildBinding binding;
     private final List<Option> options = new ArrayList<>();
 
     private ProjectConfig mProjectConfig;
@@ -121,9 +75,11 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityBuildBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setupViews();
     }
 
-    @AfterViews
     void setupViews() {
         setToolbarAsBack(getString(R.string.text_build_apk));
         preparePermissionView();
@@ -139,7 +95,7 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
      * Powered by ChatGPT3.5
      */
     private void preparePermissionView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Populate the options list
         List<String> permissions = Arrays.asList(
                 "android.permission.ACCESS_WIFI_STATE",
@@ -166,7 +122,7 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
             options.add(new Option(permission, false));
         }
         OptionAdapter adapter = new OptionAdapter(options);
-        recyclerView.setAdapter(adapter);
+        binding.recyclerView.setAdapter(adapter);
     }
 
     private void checkApkBuilderPlugin() {
@@ -208,9 +164,9 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
         if (dir.startsWith(getFilesDir().getPath())) {
             dir = Pref.getScriptDirPath();
         }
-        mOutputPath.setText(dir);
-        mAppName.setText(file.getSimplifiedName());
-        mPackageName.setText(getString(R.string.format_default_package_name, System.currentTimeMillis()));
+        binding.outputPath.setText(dir);
+        binding.appName.setText(file.getSimplifiedName());
+        binding.packageName.setText(getString(R.string.format_default_package_name, System.currentTimeMillis()));
         setSource(file);
     }
 
@@ -220,9 +176,8 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
 
     }
 
-    @Click(R.id.select_source)
     void selectSourceFilePath() {
-        String initialDir = new File(mSourcePath.getText().toString()).getParent();
+        String initialDir = new File(binding.sourcePath.getText().toString()).getParent();
         // Android 10+ 使用 StorageUtil 获取默认目录
         String defaultDir = net.cc.cca.tool.StorageUtil.getScriptDirPath(this);
         new FileChooserDialogBuilder(this)
@@ -234,38 +189,35 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
 
     private void setSource(File file) {
         if (!file.isDirectory()) {
-            mSourcePath.setText(file.getPath());
+            binding.sourcePath.setText(file.getPath());
             return;
         }
         mProjectConfig = ProjectConfig.fromProjectDir(file.getPath());
         if (mProjectConfig == null) {
             return;
         }
-        mOutputPath.setText(new File(mSource, mProjectConfig.getBuildDir()).getPath());
-        mAppConfig.setVisibility(View.GONE);
+        binding.outputPath.setText(new File(mSource, mProjectConfig.getBuildDir()).getPath());
+        binding.appConfig.setVisibility(View.GONE);
         mSourcePathContainer.setVisibility(View.GONE);
     }
 
-    @Click(R.id.select_output)
     void selectOutputDirPath() {
-        String initialDir = new File(mOutputPath.getText().toString()).exists() ?
+        String initialDir = new File(binding.outputPath.getText().toString()).exists() ?
                 mOutputPath.getText().toString() : Pref.getScriptDirPath();
         new FileChooserDialogBuilder(this)
                 .title(R.string.text_output_apk_path)
                 .dir(initialDir)
                 .chooseDir()
-                .singleChoice(dir -> mOutputPath.setText(dir.getPath()))
+                .singleChoice(dir -> binding.outputPath.setText(dir.getPath()))
                 .show();
     }
 
-    @Click(R.id.icon)
     void selectIcon() {
-        ShortcutIconSelectActivity_.intent(this)
-                .flags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-                .startForResult(REQUEST_CODE);
+        Intent intent = new Intent(this, ShortcutIconSelectActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
-    @Click(R.id.fab)
     void buildApk() {
         if (!ApkBuilderPluginHelper.isPluginAvailable(this)) {
             Toast.makeText(this, R.string.text_apk_builder_plugin_unavailable, Toast.LENGTH_SHORT).show();
@@ -279,13 +231,13 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
 
     private boolean checkInputs() {
         boolean inputValid = true;
-        inputValid &= checkNotEmpty(mSourcePath);
-        inputValid &= checkNotEmpty(mOutputPath);
-        inputValid &= checkNotEmpty(mAppName);
-        inputValid &= checkNotEmpty(mSourcePath);
-        inputValid &= checkNotEmpty(mVersionCode);
-        inputValid &= checkNotEmpty(mVersionName);
-        inputValid &= checkPackageNameValid(mPackageName);
+        inputValid &= checkNotEmpty(binding.sourcePath);
+        inputValid &= checkNotEmpty(binding.outputPath);
+        inputValid &= checkNotEmpty(binding.appName);
+        inputValid &= checkNotEmpty(binding.sourcePath);
+        inputValid &= checkNotEmpty(binding.versionCode);
+        inputValid &= checkNotEmpty(binding.versionName);
+        inputValid &= checkPackageNameValid(binding.packageName);
         return inputValid;
     }
 
@@ -317,7 +269,7 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
     private void doBuildingApk() {
         ApkBuilder.AppConfig appConfig = createAppConfig();
         File tmpDir = new File(getCacheDir(), "build/");
-        File outApk = new File(mOutputPath.getText().toString(),
+        File outApk = new File(binding.outputPath.getText().toString(),
                 String.format("%s_v%s.apk", appConfig.getAppName(), appConfig.getVersionName()));
         showProgressDialog();
         Observable.fromCallable(() -> callApkBuilder(tmpDir, outApk, appConfig))
@@ -332,11 +284,11 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
         if (mProjectConfig != null) {
             appConfig = ApkBuilder.AppConfig.fromProjectConfig(mSource, mProjectConfig);
         } else {
-            String jsPath = mSourcePath.getText().toString();
-            String versionName = mVersionName.getText().toString();
-            int versionCode = Integer.parseInt(mVersionCode.getText().toString());
-            String appName = mAppName.getText().toString();
-            String packageName = mPackageName.getText().toString();
+            String jsPath = binding.sourcePath.getText().toString();
+            String versionName = binding.versionName.getText().toString();
+            int versionCode = Integer.parseInt(binding.versionCode.getText().toString());
+            String appName = binding.appName.getText().toString();
+            String packageName = binding.packageName.getText().toString();
             appConfig = new ApkBuilder.AppConfig()
                     .setAppName(appName)
                     .setSourcePath(jsPath)
@@ -344,13 +296,13 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
                     .setVersionCode(versionCode)
                     .setVersionName(versionName)
                     .setIcon(mIsDefaultIcon ? null : (Callable<Bitmap>) () ->
-                            BitmapTool.drawableToBitmap(mIcon.getDrawable())
+                            BitmapTool.drawableToBitmap(binding.icon.getDrawable())
                     );
         }
-        appConfig.setUseOpenCv(mUseOpenCv.isChecked());
-        appConfig.setUsePaddleOcr(mUsePaddleOcr.isChecked());
-        appConfig.setUseMlKitOcr(mUseMlKitOcr.isChecked());
-        appConfig.setUseOnnx(mUseOnnx.isChecked());
+        appConfig.setUseOpenCv(binding.useOpenCv.isChecked());
+        appConfig.setUsePaddleOcr(binding.usePaddleOcr.isChecked());
+        appConfig.setUseMlKitOcr(binding.useMlKitOcr.isChecked());
+        appConfig.setUseOnnx(binding.useOnnx.isChecked());
         Set<String> enabledPermission = new HashSet<>();
         for (Option option : options) {
             if (option.isSelected()) {
@@ -438,7 +390,7 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmap -> {
-                    mIcon.setImageBitmap(bitmap);
+                    binding.icon.setImageBitmap(bitmap);
                     mIsDefaultIcon = false;
                 }, Throwable::printStackTrace);
 

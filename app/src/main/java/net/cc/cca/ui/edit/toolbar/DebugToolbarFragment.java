@@ -16,9 +16,8 @@ import net.cc.stardust.rhino.debug.Dim;
 import net.cc.stardust.runtime.exception.ScriptInterruptedException;
 import com.stardust.pio.PFiles;
 
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EFragment;
 import net.cc.cca.R;
+import net.cc.cca.databinding.FragmentDebugToolbarBinding;
 import net.cc.cca.ui.edit.EditorView;
 import net.cc.cca.ui.edit.debug.CodeEvaluator;
 import net.cc.cca.ui.edit.debug.DebugBar;
@@ -30,10 +29,10 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 
-@EFragment(R.layout.fragment_debug_toolbar)
 public class DebugToolbarFragment extends ToolbarFragment implements DebugCallback, CodeEditor.CursorChangeCallback, CodeEvaluator {
 
     private static final String LOG_TAG = "DebugToolbarFragment";
+    private FragmentDebugToolbarBinding binding;
     private EditorView mEditorView;
     private boolean mCursorChangeFromUser = true;
     private Debugger mDebugger;
@@ -68,6 +67,13 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         mHandler = new Handler();
     }
 
+    @Nullable
+    @Override
+    public android.view.View onCreateView(android.view.LayoutInflater inflater, @Nullable android.view.ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentDebugToolbarBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -85,6 +91,15 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
             mEditorView.exitDebugging();
         }
         Log.d(LOG_TAG, "onViewCreated");
+        setupClickListeners();
+    }
+
+    private void setupClickListeners() {
+        binding.stepOver.setOnClickListener(v -> stepOver());
+        binding.stepInto.setOnClickListener(v -> stepInto());
+        binding.stepOut.setOnClickListener(v -> stepOut());
+        binding.stopScript.setOnClickListener(v -> stopScript());
+        binding.resumeScript.setOnClickListener(v -> resumeScript());
     }
 
     private void setupEditor() {
@@ -126,30 +141,25 @@ public class DebugToolbarFragment extends ToolbarFragment implements DebugCallba
         debugBar.setCodeEvaluator(null);
     }
 
-    @Click(R.id.step_over)
     void stepOver() {
         setInterrupted(false);
         mDebugger.stepOver();
     }
 
-    @Click(R.id.step_into)
     void stepInto() {
         setInterrupted(false);
         mDebugger.stepInto();
     }
 
-    @Click(R.id.step_out)
     void stepOut() {
         setInterrupted(false);
         mDebugger.stepOut();
     }
 
-    @Click(R.id.stop_script)
     void stopScript() {
         mEditorView.forceStop();
     }
 
-    @Click(R.id.resume_script)
     void resumeScript() {
         setInterrupted(false);
         mDebugger.resume();

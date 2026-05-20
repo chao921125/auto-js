@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.cc.cca.R;
+import net.cc.cca.databinding.FunctionsKeyboardViewBinding;
 import net.cc.cca.model.indices.Module;
 import net.cc.cca.model.indices.Modules;
 import net.cc.cca.model.indices.Property;
@@ -33,8 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -52,12 +51,7 @@ public class FunctionsKeyboardView extends FrameLayout {
     }
 
     private static final int SPAN_COUNT = 4;
-    @BindView(R.id.module_list)
-    RecyclerView mModulesView;
-
-    @BindView(R.id.properties)
-    RecyclerView mPropertiesView;
-
+    FunctionsKeyboardViewBinding binding;
     private List<Module> mModules;
     private Map<Module, List<Integer>> mSpanSizes = new HashMap<>();
     private Module mSelectedModule;
@@ -91,8 +85,7 @@ public class FunctionsKeyboardView extends FrameLayout {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.functions_keyboard_view, this);
-        ButterKnife.bind(this);
+        binding = FunctionsKeyboardViewBinding.inflate(android.view.LayoutInflater.from(getContext()), this, true);
         initModulesView();
         initPropertiesView();
     }
@@ -100,8 +93,8 @@ public class FunctionsKeyboardView extends FrameLayout {
     private void initPropertiesView() {
         WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(getContext(), SPAN_COUNT);
         manager.setDebugInfo("FunctionsKeyboardView");
-        mPropertiesView.setLayoutManager(manager);
-        mPropertiesView.setAdapter(new PropertiesAdapter());
+        binding.properties.setLayoutManager(manager);
+        binding.properties.setAdapter(new PropertiesAdapter());
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 
             @Override
@@ -111,7 +104,7 @@ public class FunctionsKeyboardView extends FrameLayout {
         });
         Drawable divider = ContextCompat.getDrawable(getContext(), R.drawable.divider_functions_view);
         GridDividerDecoration dividerItemDecoration = new GridDividerDecoration(getContext(), divider);
-        mPropertiesView.addItemDecoration(dividerItemDecoration);
+        binding.properties.addItemDecoration(dividerItemDecoration);
 
     }
 
@@ -165,8 +158,8 @@ public class FunctionsKeyboardView extends FrameLayout {
     }
 
     private void initModulesView() {
-        mModulesView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false));
-        mModulesView.setAdapter(new ModulesAdapter());
+        binding.modulesView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayout.HORIZONTAL, false));
+        binding.modulesView.setAdapter(new ModulesAdapter());
     }
 
     private void loadModules() {
@@ -177,8 +170,8 @@ public class FunctionsKeyboardView extends FrameLayout {
                     if (modules.size() > 0) {
                         setSelectedModule(modules.get(0), null);
                     }
-                    mModulesView.getAdapter().notifyDataSetChanged();
-                    mPropertiesView.getAdapter().notifyDataSetChanged();
+                    binding.modulesView.getAdapter().notifyDataSetChanged();
+                    binding.properties.getAdapter().notifyDataSetChanged();
                 });
     }
 
@@ -192,7 +185,7 @@ public class FunctionsKeyboardView extends FrameLayout {
         if (mSelectedModuleView != null)
             mSelectedModuleView.setSelected(true);
         initSpanSizes(mSelectedModule);
-        mPropertiesView.getAdapter().notifyDataSetChanged();
+        binding.properties.getAdapter().notifyDataSetChanged();
     }
 
     @Override

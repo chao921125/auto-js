@@ -19,15 +19,12 @@ import net.cc.stardust.core.permission.RequestPermissionCallbacks;
 import net.cc.stardust.execution.ScriptExecution;
 import com.stardust.pio.PFiles;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityEditBinding;
 import net.cc.cca.storage.file.TmpScriptFiles;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 import net.cc.cca.tool.Observers;
 import net.cc.cca.ui.BaseActivity;
-import net.cc.cca.ui.main.MainActivity_;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,14 +46,13 @@ import static net.cc.cca.ui.edit.EditorView.EXTRA_READ_ONLY;
 /**
  * Created by Stardust on 2017/1/29.
  */
-@EActivity(R.layout.activity_edit)
 public class EditActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, PermissionRequestProxyActivity {
 
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
     private static final String LOG_TAG = "EditActivity";
 
-    @ViewById(R.id.editor_view)
-    EditorView mEditorView;
+    private ActivityEditBinding binding;
+    private EditorView mEditorView;
 
     private EditorMenu mEditorMenu;
     private RequestPermissionCallbacks mRequestPermissionCallbacks = new RequestPermissionCallbacks();
@@ -85,7 +81,7 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private static Intent newIntent(Context context, boolean newTask) {
-        Intent intent = new Intent(context, EditActivity_.class);
+        Intent intent = new Intent(context, EditActivity.class);
         if (newTask || !(context instanceof Activity)) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
@@ -95,12 +91,15 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityEditBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         mNewTask = (getIntent().getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0;
+        setUpViews();
     }
 
     @SuppressLint("CheckResult")
-    @AfterViews
     void setUpViews() {
+        mEditorView = binding.editorView;
         mEditorView.handleIntent(getIntent())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(Observers.emptyConsumer(),
@@ -228,7 +227,7 @@ public class EditActivity extends BaseActivity implements OnActivityResultDelega
             super.finish();
         }
         if (mNewTask) {
-            startActivity(new Intent(this, MainActivity_.class));
+            startActivity(new Intent(this, MainActivity.class));
         }
     }
 

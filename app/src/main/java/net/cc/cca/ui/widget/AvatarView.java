@@ -18,11 +18,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import net.cc.cca.R;
+import net.cc.cca.databinding.AvatarViewBinding;
 import net.cc.cca.network.NodeBB;
 import net.cc.cca.network.entity.user.User;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by 婷 on 2017/9/29.
@@ -30,12 +28,7 @@ import butterknife.ButterKnife;
 
 public class AvatarView extends FrameLayout {
 
-    @BindView(R.id.icon_text)
-    TextView mIconText;
-
-    @BindView(R.id.icon)
-    RoundedImageView mIcon;
-
+    private AvatarViewBinding binding;
     private GradientDrawable mIconTextBackground;
 
 
@@ -55,35 +48,34 @@ public class AvatarView extends FrameLayout {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.avatar_view, this);
-        ButterKnife.bind(this);
-        mIconTextBackground = (GradientDrawable) mIconText.getBackground();
+        binding = AvatarViewBinding.inflate(android.view.LayoutInflater.from(getContext()), this, true);
+        mIconTextBackground = (GradientDrawable) binding.iconText.getBackground();
     }
 
     public void setIcon(int resId) {
-        mIcon.setVisibility(View.VISIBLE);
-        mIconText.setVisibility(View.GONE);
-        mIcon.setImageResource(resId);
+        binding.icon.setVisibility(View.VISIBLE);
+        binding.iconText.setVisibility(View.GONE);
+        binding.icon.setImageResource(resId);
     }
 
     public void setUser(final User user) {
         if (TextUtils.isEmpty(user.getPicture())) {
-            mIcon.setVisibility(View.GONE);
-            mIconText.setVisibility(View.VISIBLE);
+            binding.icon.setVisibility(View.GONE);
+            binding.iconText.setVisibility(View.VISIBLE);
             mIconTextBackground.setColor(Color.parseColor(user.getIconBgColor()));
             mIconTextBackground.setCornerRadius(getWidth() / 2);
-            mIconText.setText(user.getIconText());
+            binding.iconText.setText(user.getIconText());
         } else {
-            mIcon.setVisibility(View.VISIBLE);
-            mIconText.setVisibility(View.GONE);
-            mIcon.setCornerRadius(getWidth() / 2);
+            binding.icon.setVisibility(View.VISIBLE);
+            binding.iconText.setVisibility(View.GONE);
+            binding.icon.setCornerRadius(getWidth() / 2);
             Glide.with(getContext())
                     .load(NodeBB.BASE_URL + user.getPicture())
                     .apply(new RequestOptions()
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
                     )
-                    .into(mIcon);
+                    .into(binding.icon);
         }
     }
 }

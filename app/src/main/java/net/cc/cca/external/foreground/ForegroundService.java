@@ -16,7 +16,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import net.cc.cca.R;
-import net.cc.cca.ui.main.MainActivity_;
+import net.cc.cca.ui.main.MainActivity;
 
 public class ForegroundService extends Service {
 
@@ -50,7 +50,7 @@ public class ForegroundService extends Service {
 
     private Notification buildNotification() {
         createNotificationChannel();
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, MainActivity_.intent(this).get(), FLAG_IMMUTABLE);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), FLAG_IMMUTABLE);
         
         return new NotificationCompat.Builder(this, CHANEL_ID)
                 .setContentTitle(getString(R.string.foreground_notification_title))

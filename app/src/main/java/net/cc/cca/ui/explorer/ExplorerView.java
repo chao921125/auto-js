@@ -25,6 +25,9 @@ import android.widget.TextView;
 import com.stardust.pio.PFiles;
 
 import net.cc.cca.R;
+import net.cc.cca.databinding.ScriptFileListFileBinding;
+import net.cc.cca.databinding.ScriptFileListDirectoryBinding;
+import net.cc.cca.databinding.ScriptFileListCategoryBinding;
 import net.cc.cca.model.explorer.Explorer;
 import net.cc.cca.model.explorer.ExplorerChangeEvent;
 import net.cc.cca.model.explorer.ExplorerDirPage;
@@ -39,7 +42,7 @@ import net.cc.cca.model.script.ScriptFile;
 import net.cc.cca.model.script.Scripts;
 import net.cc.cca.tool.Observers;
 import net.cc.cca.ui.project.BuildActivity;
-import net.cc.cca.ui.project.BuildActivity_;
+import net.cc.cca.ui.project.BuildActivity;
 import net.cc.cca.ui.common.ScriptLoopDialog;
 import net.cc.cca.ui.common.ScriptOperations;
 import net.cc.cca.ui.viewmodel.ExplorerItemList;
@@ -50,10 +53,6 @@ import net.cc.cca.workground.WrapContentGridLayoutManger;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Stack;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
@@ -320,66 +319,53 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.rename:
-                new ScriptOperations(getContext(), this, getCurrentPage())
-                        .rename((ExplorerFileItem) mSelectedItem)
-                        .subscribe(Observers.emptyObserver());
-                break;
-            case R.id.delete:
-                new ScriptOperations(getContext(), this, getCurrentPage())
-                        .delete(mSelectedItem.toScriptFile());
-                break;
-            case R.id.run_repeatedly:
-                new ScriptLoopDialog(getContext(), mSelectedItem.toScriptFile())
-                        .show();
-                notifyOperated();
-                break;
-            case R.id.create_shortcut:
-                new ScriptOperations(getContext(), this, getCurrentPage())
-                        .createShortcut(mSelectedItem.toScriptFile());
-                break;
-            case R.id.open_by_other_apps:
-                Scripts.INSTANCE.openByOtherApps(mSelectedItem.toScriptFile());
-                notifyOperated();
-                break;
-            case R.id.send:
-                Scripts.INSTANCE.send(mSelectedItem.toScriptFile());
-                notifyOperated();
-                break;
-            case R.id.timed_task:
-                new ScriptOperations(getContext(), this, getCurrentPage())
-                        .timedTask(mSelectedItem.toScriptFile());
-                notifyOperated();
-                break;
-            case R.id.action_build_apk:
-                BuildActivity_.intent(getContext())
-                        .extra(BuildActivity.EXTRA_SOURCE, mSelectedItem.getPath())
-                        .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .start();
-                notifyOperated();
-                break;
-            case R.id.action_sort_by_date:
-                sort(ExplorerItemList.SORT_TYPE_DATE, mDirSortMenuShowing);
-                break;
-            case R.id.action_sort_by_type:
-                sort(ExplorerItemList.SORT_TYPE_TYPE, mDirSortMenuShowing);
-                break;
-            case R.id.action_sort_by_name:
-                sort(ExplorerItemList.SORT_TYPE_NAME, mDirSortMenuShowing);
-                break;
-            case R.id.action_sort_by_size:
-                sort(ExplorerItemList.SORT_TYPE_SIZE, mDirSortMenuShowing);
-                break;
-            case R.id.reset:
-                Explorers.Providers.workspace().resetSample(mSelectedItem.toScriptFile())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(ignored -> {
-                            Snackbar.make(this, R.string.text_reset_succeed, Snackbar.LENGTH_SHORT).show();
-                        }, Observers.toastMessage());
-                break;
-            default:
-                return false;
+        int itemId = item.getItemId();
+        if (itemId == R.id.rename) {
+            new ScriptOperations(getContext(), this, getCurrentPage())
+                    .rename((ExplorerFileItem) mSelectedItem)
+                    .subscribe(Observers.emptyObserver());
+        } else if (itemId == R.id.delete) {
+            new ScriptOperations(getContext(), this, getCurrentPage())
+                    .delete(mSelectedItem.toScriptFile());
+        } else if (itemId == R.id.run_repeatedly) {
+            new ScriptLoopDialog(getContext(), mSelectedItem.toScriptFile())
+                    .show();
+            notifyOperated();
+        } else if (itemId == R.id.create_shortcut) {
+            new ScriptOperations(getContext(), this, getCurrentPage())
+                    .createShortcut(mSelectedItem.toScriptFile());
+        } else if (itemId == R.id.open_by_other_apps) {
+            Scripts.INSTANCE.openByOtherApps(mSelectedItem.toScriptFile());
+            notifyOperated();
+        } else if (itemId == R.id.send) {
+            Scripts.INSTANCE.send(mSelectedItem.toScriptFile());
+            notifyOperated();
+        } else if (itemId == R.id.timed_task) {
+            new ScriptOperations(getContext(), this, getCurrentPage())
+                    .timedTask(mSelectedItem.toScriptFile());
+            notifyOperated();
+        } else if (itemId == R.id.action_build_apk) {
+            Intent intent = new Intent(getContext(), BuildActivity.class);
+            intent.putExtra(BuildActivity.EXTRA_SOURCE, mSelectedItem.getPath());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(intent);
+            notifyOperated();
+        } else if (itemId == R.id.action_sort_by_date) {
+            sort(ExplorerItemList.SORT_TYPE_DATE, mDirSortMenuShowing);
+        } else if (itemId == R.id.action_sort_by_type) {
+            sort(ExplorerItemList.SORT_TYPE_TYPE, mDirSortMenuShowing);
+        } else if (itemId == R.id.action_sort_by_name) {
+            sort(ExplorerItemList.SORT_TYPE_NAME, mDirSortMenuShowing);
+        } else if (itemId == R.id.action_sort_by_size) {
+            sort(ExplorerItemList.SORT_TYPE_SIZE, mDirSortMenuShowing);
+        } else if (itemId == R.id.reset) {
+            Explorers.Providers.workspace().resetSample(mSelectedItem.toScriptFile())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ignored -> {
+                        Snackbar.make(this, R.string.text_reset_succeed, Snackbar.LENGTH_SHORT).show();
+                    }, Observers.toastMessage());
+        } else {
+            return false;
         }
         return true;
     }
@@ -510,26 +496,31 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     protected class ExplorerItemViewHolder extends BindableViewHolder<ExplorerItem> {
 
-        @BindView(R.id.name)
         TextView mName;
-        @BindView(R.id.first_char)
         TextView mFirstChar;
-        @BindView(R.id.desc)
         TextView mDesc;
-        @BindView(R.id.more)
         View mOptions;
-        @BindView(R.id.edit)
         View mEdit;
-        @BindView(R.id.run)
         View mRun;
-
         GradientDrawable mFirstCharBackground;
         private ExplorerItem mExplorerItem;
+        private ScriptFileListFileBinding binding;
 
         ExplorerItemViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = ScriptFileListFileBinding.bind(itemView);
+            mName = binding.name;
+            mFirstChar = binding.firstChar;
+            mDesc = binding.desc;
+            mOptions = binding.more;
+            mEdit = binding.edit;
+            mRun = binding.run;
             mFirstCharBackground = (GradientDrawable) mFirstChar.getBackground();
+            
+            itemView.setOnClickListener(v -> onItemClick());
+            mRun.setOnClickListener(v -> run());
+            mEdit.setOnClickListener(v -> edit());
+            mOptions.setOnClickListener(v -> showOptionMenu());
         }
 
         @Override
@@ -543,7 +534,6 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             mRun.setVisibility(item.isExecutable() ? VISIBLE : GONE);
         }
 
-        @OnClick(R.id.item)
         void onItemClick() {
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onItemClick(itemView, mExplorerItem);
@@ -551,19 +541,16 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             notifyOperated();
         }
 
-        @OnClick(R.id.run)
         void run() {
             Scripts.INSTANCE.run(new ScriptFile(mExplorerItem.getPath()));
             notifyOperated();
         }
 
-        @OnClick(R.id.edit)
         void edit() {
             Scripts.INSTANCE.edit(getContext(), new ScriptFile(mExplorerItem.getPath()));
             notifyOperated();
         }
 
-        @OnClick(R.id.more)
         void showOptionMenu() {
             mSelectedItem = mExplorerItem;
             PopupMenu popupMenu = new PopupMenu(getContext(), mOptions);
@@ -589,20 +576,18 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     protected class ExplorerPageViewHolder extends BindableViewHolder<ExplorerPage> {
 
-        @BindView(R.id.name)
         public TextView mName;
-
-        @BindView(R.id.more)
         public View mOptions;
-
-        @BindView(R.id.icon)
         public ImageView mIcon;
-
         private ExplorerPage mExplorerPage;
+        private ScriptFileListDirectoryBinding binding;
 
         ExplorerPageViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = ScriptFileListDirectoryBinding.bind(itemView);
+            mName = binding.name;
+            mOptions = binding.more;
+            mIcon = binding.icon;
         }
 
         @Override
@@ -614,12 +599,10 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         }
 
-        @OnClick(R.id.item)
         void onItemClick() {
             enterDirectChildPage(mExplorerPage);
         }
 
-        @OnClick(R.id.more)
         void showOptionMenu() {
             mSelectedItem = mExplorerPage;
             PopupMenu popupMenu = new PopupMenu(getContext(), mOptions);
@@ -631,26 +614,27 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
     class CategoryViewHolder extends BindableViewHolder<Boolean> {
 
-        @BindView(R.id.title)
         TextView mTitle;
-
-        @BindView(R.id.sort)
         ImageView mSort;
-
-        @BindView(R.id.order)
         ImageView mSortOrder;
-
-        @BindView(R.id.back)
         ImageView mGoBack;
-
-        @BindView(R.id.collapse)
         ImageView mArrow;
-
         private boolean mIsDir;
+        private ScriptFileListCategoryBinding binding;
 
         CategoryViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = ScriptFileListCategoryBinding.bind(itemView);
+            mTitle = binding.title;
+            mSort = binding.sort;
+            mSortOrder = binding.order;
+            mGoBack = binding.back;
+            mArrow = binding.collapse;
+            
+            mSortOrder.setOnClickListener(v -> changeSortOrder());
+            mSort.setOnClickListener(v -> showSortOptions());
+            mGoBack.setOnClickListener(v -> back());
+            binding.titleContainer.setOnClickListener(v -> collapseOrExpand());
         }
 
         @Override
@@ -673,7 +657,6 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             }
         }
 
-        @OnClick(R.id.order)
         void changeSortOrder() {
             if (mIsDir) {
                 mSortOrder.setImageResource(mExplorerItemList.isDirSortedAscending() ?
@@ -688,7 +671,6 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
             }
         }
 
-        @OnClick(R.id.sort)
         void showSortOptions() {
             PopupMenu popupMenu = new PopupMenu(getContext(), mSort);
             popupMenu.inflate(R.menu.menu_sort_options);
@@ -698,14 +680,12 @@ public class ExplorerView extends ThemeColorSwipeRefreshLayout implements SwipeR
 
         }
 
-        @OnClick(R.id.back)
         void back() {
             if (canGoBack()) {
                 goBack();
             }
         }
 
-        @OnClick(R.id.title_container)
         void collapseOrExpand() {
             if (mIsDir) {
                 mCurrentPageState.dirsCollapsed = !mCurrentPageState.dirsCollapsed;

@@ -16,9 +16,6 @@ import net.cc.cca.R;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Stardust on 2017/10/20.
  */
@@ -103,9 +100,6 @@ public class OptionListView extends LinearLayout {
             holder.itemView.setId(mIds.get(position));
             holder.text.setText(mTexts.get(position));
             holder.icon.setImageResource(mIcons.get(position));
-            if (mOnItemClickTarget != null) {
-                ButterKnife.bind(mOnItemClickTarget, holder.itemView);
-            }
         }
 
         @Override
@@ -117,14 +111,13 @@ public class OptionListView extends LinearLayout {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.icon)
         ImageView icon;
-        @BindView(R.id.text)
         TextView text;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            icon = itemView.findViewById(R.id.icon);
+            text = itemView.findViewById(R.id.text);
         }
 
     }

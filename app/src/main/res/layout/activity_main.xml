@@ -75,7 +75,7 @@
 
     <fragment
         android:id="@+id/fragment_drawer"
-        android:name="net.cc.cca.ui.main.drawer.DrawerFragment_"
+        android:name="net.cc.cca.ui.main.drawer.DrawerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"

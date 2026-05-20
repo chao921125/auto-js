@@ -21,12 +21,10 @@ import com.stardust.util.IntentUtil;
 import com.stardust.view.accessibility.AccessibilityService;
 
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.App;
 import net.cc.cca.Pref;
 import net.cc.cca.R;
+import net.cc.cca.databinding.FragmentDrawerBinding;
 import net.cc.cca.autojs.AutoJs;
 import net.cc.cca.external.foreground.ForegroundService;
 import net.cc.cca.pluginclient.DevPluginService;
@@ -64,17 +62,14 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/1/30.
  * TODO these codes are so ugly!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
-@EFragment(R.layout.fragment_drawer)
 public class DrawerFragment extends androidx.fragment.app.Fragment {
 
     private static final String URL_DEV_PLUGIN = "https://www.autojs.org/topic/968/";
 
-    @ViewById(R.id.header)
-    View mHeaderView;
-    @ViewById(R.id.shadow)
-    View mShadow;
-    @ViewById(R.id.drawer_menu)
-    RecyclerView mDrawerMenu;
+    private FragmentDrawerBinding binding;
+    private View mHeaderView;
+    private View mShadow;
+    private RecyclerView mDrawerMenu;
 
 
     private DrawerMenuItem mConnectionItem = new DrawerMenuItem(R.drawable.ic_connect_to_pc, R.string.debug, 0, this::connectOrDisconnectToRemote);
@@ -107,6 +102,22 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
     private CommunityDrawerMenu mCommunityDrawerMenu = new CommunityDrawerMenu();
 
 
+    @Nullable
+    @Override
+    public android.view.View onCreateView(android.view.LayoutInflater inflater, @Nullable android.view.ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentDrawerBinding.inflate(inflater, container, false);
+        mHeaderView = binding.header;
+        mShadow = binding.shadow;
+        mDrawerMenu = binding.drawerMenu;
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpViews();
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +136,6 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
 
     }
 
-    @AfterViews
     void setUpViews() {
         ThemeColorManager.addViewBackground(mHeaderView);
         initMenuItems();

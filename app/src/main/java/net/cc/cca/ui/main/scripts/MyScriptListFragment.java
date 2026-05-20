@@ -11,11 +11,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.util.IntentUtil;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.Pref;
 import net.cc.cca.R;
+import net.cc.cca.databinding.FragmentMyScriptListBinding;
 import net.cc.cca.external.fileprovider.AppFileProvider;
 import net.cc.cca.model.explorer.ExplorerDirPage;
 import net.cc.cca.model.explorer.Explorers;
@@ -30,7 +28,6 @@ import net.cc.cca.ui.main.FloatingActionMenu;
 import net.cc.cca.ui.main.QueryEvent;
 import net.cc.cca.ui.main.ViewPagerFragment;
 import net.cc.cca.ui.project.ProjectConfigActivity;
-import net.cc.cca.ui.project.ProjectConfigActivity_;
 import net.cc.cca.ui.viewmodel.ExplorerItemList;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,19 +37,31 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 /**
  * Created by Stardust on 2017/3/13.
  */
-@EFragment(R.layout.fragment_my_script_list)
 public class MyScriptListFragment extends ViewPagerFragment implements FloatingActionMenu.OnFloatingActionButtonClickListener {
 
     private static final String TAG = "MyScriptListFragment";
+
+    private FragmentMyScriptListBinding binding;
+    private ExplorerView mExplorerView;
+    private FloatingActionMenu mFloatingActionMenu;
 
     public MyScriptListFragment() {
         super(0);
     }
 
-    @ViewById(R.id.script_file_list)
-    ExplorerView mExplorerView;
+    @Nullable
+    @Override
+    public android.view.View onCreateView(android.view.LayoutInflater inflater, @Nullable android.view.ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentMyScriptListBinding.inflate(inflater, container, false);
+        mExplorerView = binding.scriptFileList;
+        return binding.getRoot();
+    }
 
-    private FloatingActionMenu mFloatingActionMenu;
+    @Override
+    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpViews();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +69,6 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
         EventBus.getDefault().register(this);
     }
 
-    @AfterViews
     void setUpViews() {
         ExplorerItemList.SortConfig sortConfig = ExplorerItemList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
         mExplorerView.setSortConfig(sortConfig);
@@ -191,10 +199,10 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
                         .importFile();
                 break;
             case 3:
-                ProjectConfigActivity_.intent(getContext())
-                        .extra(ProjectConfigActivity.EXTRA_PARENT_DIRECTORY, mExplorerView.getCurrentPage().getPath())
-                        .extra(ProjectConfigActivity.EXTRA_NEW_PROJECT, true)
-                        .start();
+                ProjectConfigActivity.builder(getContext())
+                        .putExtra(ProjectConfigActivity.EXTRA_PARENT_DIRECTORY, mExplorerView.getCurrentPage().getPath())
+                        .putExtra(ProjectConfigActivity.EXTRA_NEW_PROJECT, true)
+                        .startActivity();
                 break;
 
         }

@@ -8,10 +8,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import net.cc.cca.R;
+import net.cc.cca.databinding.DialogTextSizeSettingBinding;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Stardust on 2018/2/24.
@@ -27,24 +25,18 @@ public class TextSizeSettingDialogBuilder extends ThemeColorMaterialDialogBuilde
 
     private static final int MIN = 8;
 
-    @BindView(R.id.seekbar)
-    SeekBar mSeekBar;
-
-    @BindView(R.id.preview_text)
-    TextView mPreviewText;
-
+    DialogTextSizeSettingBinding binding;
     private int mTextSize;
     private MaterialDialog mMaterialDialog;
 
     public TextSizeSettingDialogBuilder(@NonNull Context context) {
         super(context);
-        View view = View.inflate(context, R.layout.dialog_text_size_setting, null);
-        customView(view, false);
+        binding = DialogTextSizeSettingBinding.inflate(android.view.LayoutInflater.from(context));
+        customView(binding.getRoot(), false);
         title(R.string.text_text_size);
         positiveText(R.string.ok);
         negativeText(R.string.cancel);
-        ButterKnife.bind(this, view);
-        mSeekBar.setOnSeekBarChangeListener(this);
+        binding.seekbar.setOnSeekBarChangeListener(this);
     }
 
     private void setTextSize(int textSize) {
@@ -55,11 +47,11 @@ public class TextSizeSettingDialogBuilder extends ThemeColorMaterialDialogBuilde
         } else {
             title(title);
         }
-        mPreviewText.setTextSize(textSize);
+        binding.previewText.setTextSize(textSize);
     }
 
     public TextSizeSettingDialogBuilder initialValue(int value) {
-        mSeekBar.setProgress(value - MIN);
+        binding.seekbar.setProgress(value - MIN);
         return this;
     }
 

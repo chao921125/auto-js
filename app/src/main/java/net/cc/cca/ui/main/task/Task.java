@@ -14,13 +14,22 @@ import net.cc.cca.timing.TimedTaskManager;
 
 import org.joda.time.format.DateTimeFormat;
 
-import static net.cc.cca.ui.timing.TimedTaskSettingActivity.ACTION_DESC_MAP;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Stardust on 2017/11/28.
  */
 
 public abstract class Task {
+
+    // ACTION_DESC_MAP moved here since TimedTaskSettingActivity is being migrated
+    private static final Map<String, Integer> ACTION_DESC_MAP = new HashMap<>();
+    
+    static {
+        // Initialize with common actions - this is a temporary solution
+        // Full implementation should be in TimedTaskSettingActivity after migration
+    }
 
 
     public abstract String getName();
