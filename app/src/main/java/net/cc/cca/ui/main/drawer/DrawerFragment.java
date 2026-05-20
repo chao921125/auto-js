@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stardust.app.AppOpsKt;
 import com.stardust.app.GlobalAppContext;
-import net.cc.stardust.shizuku.WrappedShizuku;
+import net.cc.stardust.autojs.shizuku.WrappedShizuku;
 import com.stardust.notification.NotificationListenerService;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.IntentUtil;

@@ -6,7 +6,7 @@ import android.os.Looper;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.floaty.BaseResizableFloatyWindow;
 import net.cc.stardust.core.floaty.RawWindow;
 import net.cc.stardust.core.ui.JsViewHelper;

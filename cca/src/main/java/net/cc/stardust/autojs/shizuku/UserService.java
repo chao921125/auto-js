@@ -1,4 +1,4 @@
-package net.cc.stardust.shizuku;
+package net.cc.stardust.autojs.shizuku;
 
 import android.content.Context;
 import android.os.RemoteException;

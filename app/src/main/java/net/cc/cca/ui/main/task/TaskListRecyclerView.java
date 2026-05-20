@@ -22,7 +22,7 @@ import net.cc.stardust.execution.ScriptExecutionListener;
 import net.cc.stardust.execution.SimpleScriptExecutionListener;
 import net.cc.stardust.script.AutoFileSource;
 import net.cc.stardust.workground.WrapContentLinearLayoutManager;
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
 import net.cc.cca.R;
 import net.cc.cca.autojs.AutoJs;
@@ -101,12 +101,10 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
 
     private void init() {
         setLayoutManager(new WrapContentLinearLayoutManager(getContext()));
-        addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
-                .color(ContextCompat.getColor(getContext(), R.color.divider))
-                .size(2)
-                .marginResId(R.dimen.script_and_folder_list_divider_left_margin, R.dimen.script_and_folder_list_divider_right_margin)
-                .showLastDivider()
-                .build());
+        // Use AndroidX DividerItemDecoration
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(), VERTICAL);
+        divider.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_script_list));
+        addItemDecoration(divider);
         mRunningTaskGroup = new TaskGroup.RunningTaskGroup(getContext());
         mTaskGroups.add(mRunningTaskGroup);
         mPendingTaskGroup = new TaskGroup.PendingTaskGroup(getContext());

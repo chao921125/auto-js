@@ -2,12 +2,12 @@ package net.cc.cca.ui.settings;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.cc.cca.autojs.AutoJs;
+import net.cc.cca.databinding.ActivityAboutBinding;
 import net.cc.cca.timing.TimedTaskManager;
 import net.cc.cca.tool.IntentTool;
 import net.cc.cca.ui.BaseActivity;
@@ -18,11 +18,6 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import net.cc.cca.BuildConfig;
 import net.cc.cca.R;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -37,38 +32,52 @@ import androidx.work.WorkManager;
 /**
  * Created by Stardust on 2017/2/2.
  */
-@EActivity(R.layout.activity_about)
 public class AboutActivity extends BaseActivity {
 
     private static final String TAG = "AboutActivity";
-    @ViewById(R.id.version)
-    TextView mVersion;
+    private ActivityAboutBinding binding;
 
     private int mLolClickCount = 0;
 
+    @Override
+    protected void onCreate(android.os.Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityAboutBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
+        setUpViews();
+        setupClickListeners();
+    }
 
-    @AfterViews
     void setUpViews() {
         setVersionName();
         setToolbarAsBack(getString(R.string.text_about));
     }
 
-    @SuppressLint("SetTextI18n")
-    private void setVersionName() {
-        mVersion.setText("Version " + BuildConfig.VERSION_NAME);
+    private void setupClickListeners() {
+        binding.github.setOnClickListener(v -> openGitHub());
+        binding.newGithub.setOnClickListener(v -> openModifiedGitHub());
+        binding.qq.setOnClickListener(v -> openQQToChatWithMe());
+        binding.iconContainer.setOnClickListener(v -> showDebugInfo());
+        binding.email.setOnClickListener(v -> openEmailToSendMe());
+        binding.icon.setOnClickListener(v -> lol());
+        binding.developer.setOnClickListener(v -> hhh());
+        binding.modifier.setOnClickListener(v -> hhhh());
     }
 
-    @Click(R.id.github)
+    @SuppressLint("SetTextI18n")
+    private void setVersionName() {
+        binding.version.setText("Version " + BuildConfig.VERSION_NAME);
+    }
+
     void openGitHub() {
         IntentTool.browse(this, getString(R.string.my_github));
     }
 
-    @Click(R.id.new_github)
     void openModifiedGitHub() {
         IntentTool.browse(this, getString(R.string.new_github_repo));
     }
 
-    @Click(R.id.qq)
     void openQQToChatWithMe() {
         String qq = getString(R.string.qq);
         if (!IntentUtil.chatWithQQ(this, qq)) {
@@ -76,7 +85,6 @@ public class AboutActivity extends BaseActivity {
         }
     }
 
-    @Click(R.id.icon_container)
     @SuppressWarnings("CheckResult")
     void showDebugInfo() {
         final long currentMillis = System.currentTimeMillis();
@@ -99,19 +107,16 @@ public class AboutActivity extends BaseActivity {
         });
     }
 
-    @Click(R.id.email)
     void openEmailToSendMe() {
         String email = getString(R.string.email);
         IntentUtil.sendMailTo(this, email);
     }
 
 
-//    @Click(R.id.share)
 //    void share() {
 //        IntentUtil.shareText(this, getString(R.string.share_app));
 //    }
 
-    @Click(R.id.icon)
     void lol() {
         mLolClickCount++;
         //Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
@@ -136,12 +141,10 @@ public class AboutActivity extends BaseActivity {
                 }).show();
     }
 
-    @Click(R.id.developer)
     void hhh() {
         Toast.makeText(this, R.string.text_it_is_the_developer_of_app, Toast.LENGTH_LONG).show();
     }
 
-    @Click(R.id.modifier)
     void hhhh() {
         Toast.makeText(this, R.string.text_it_is_the_modifier_of_app, Toast.LENGTH_LONG).show();
     }

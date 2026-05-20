@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 
 public class CaptureForegroundService extends Service {
 

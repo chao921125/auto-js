@@ -8,9 +8,8 @@ import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityScriptWidgetSettingsBinding;
 import net.cc.cca.model.explorer.Explorer;
 import net.cc.cca.model.explorer.ExplorerDirPage;
 import net.cc.cca.model.explorer.ExplorerFileProvider;
@@ -21,20 +20,23 @@ import net.cc.cca.ui.explorer.ExplorerView;
 /**
  * Created by Stardust on 2017/7/11.
  */
-@EActivity(R.layout.activity_script_widget_settings)
 public class ScriptWidgetSettingsActivity extends BaseActivity {
 
     private String mSelectedScriptFilePath;
     private Explorer mExplorer;
     private int mAppWidgetId;
+    private ActivityScriptWidgetSettingsBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityScriptWidgetSettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         mAppWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        setUpViews();
     }
 
-    @AfterViews
     void setUpViews() {
         BaseActivity.setToolbarAsBack(this, R.id.toolbar, getString(R.string.text_please_choose_a_script));
         initScriptListRecyclerView();

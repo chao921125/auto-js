@@ -100,7 +100,7 @@ public class TaskScheduler {
     public boolean addOneTimeTask(String taskId, long delayMs, String scriptPath) {
         try {
             Calendar calendar = Calendar.getInstance();
-            calendar.getTimeInMillis().add(delayMs);
+            calendar.add(Calendar.MILLISECOND, (int) delayMs);
             
             ScheduledTask task = new ScheduledTask(taskId, calendar, scriptPath);
             taskQueue.add(task);
@@ -272,7 +272,7 @@ public class TaskScheduler {
                 context,
                 taskId.hashCode(),
                 intent,
-                PendingIntent.NO_CANCEL
+                PendingIntent.FLAG_NO_CREATE
             );
             if (pendingIntent != null) {
                 pendingIntent.cancel();

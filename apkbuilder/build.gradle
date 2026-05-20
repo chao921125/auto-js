@@ -5,6 +5,15 @@ android {
     namespace "net.cc.cca.apkbuilder"
     compileSdkVersion versions.compile
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     defaultConfig {
         minSdkVersion versions.mini
         targetSdkVersion versions.target

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.WindowManager;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.annotation.ScriptInterface;
 import net.cc.stardust.runtime.ScriptRuntime;
 import net.cc.stardust.runtime.api.AbstractConsole;

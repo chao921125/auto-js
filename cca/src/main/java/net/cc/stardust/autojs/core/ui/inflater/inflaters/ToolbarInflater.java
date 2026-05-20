@@ -5,7 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.ui.inflater.ResourceParser;
 import net.cc.stardust.core.ui.inflater.ViewCreator;
 import net.cc.stardust.core.ui.inflater.util.Colors;

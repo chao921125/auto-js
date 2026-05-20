@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import com.stardust.enhancedfloaty.gesture.DragGesture;
 import com.stardust.enhancedfloaty.gesture.ResizeGesture;
 import com.stardust.enhancedfloaty.util.WindowTypeCompat;

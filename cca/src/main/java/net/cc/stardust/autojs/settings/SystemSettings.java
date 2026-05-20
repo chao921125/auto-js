@@ -105,7 +105,14 @@ public class SystemSettings {
      */
     public int getInt(String scope, String name, int defaultValue) {
         try {
-            return Settings.getInt(contentResolver, name, defaultValue);
+            // Use the correct Settings API based on scope
+            if ("global".equalsIgnoreCase(scope)) {
+                return Settings.Global.getInt(contentResolver, name, defaultValue);
+            } else if ("secure".equalsIgnoreCase(scope)) {
+                return Settings.Secure.getInt(contentResolver, name, defaultValue);
+            } else {
+                return Settings.System.getInt(contentResolver, name, defaultValue);
+            }
         } catch (Exception e) {
             Log.w(TAG, "读取整数设置失败: " + name, e);
             return defaultValue;
@@ -117,8 +124,13 @@ public class SystemSettings {
      */
     public boolean setInt(String scope, String name, int value) {
         try {
-            Settings.putInt(contentResolver, name, value);
-            return true;
+            if ("global".equalsIgnoreCase(scope)) {
+                return Settings.Global.putInt(contentResolver, name, value);
+            } else if ("secure".equalsIgnoreCase(scope)) {
+                return Settings.Secure.putInt(contentResolver, name, value);
+            } else {
+                return Settings.System.putInt(contentResolver, name, value);
+            }
         } catch (Exception e) {
             Log.e(TAG, "写入整数设置失败: " + name, e);
             return false;
@@ -130,7 +142,13 @@ public class SystemSettings {
      */
     public float getFloat(String scope, String name, float defaultValue) {
         try {
-            return Settings.getFloat(contentResolver, name, defaultValue);
+            if ("global".equalsIgnoreCase(scope)) {
+                return Settings.Global.getFloat(contentResolver, name, defaultValue);
+            } else if ("secure".equalsIgnoreCase(scope)) {
+                return Settings.Secure.getFloat(contentResolver, name, defaultValue);
+            } else {
+                return Settings.System.getFloat(contentResolver, name, defaultValue);
+            }
         } catch (Exception e) {
             Log.w(TAG, "读取浮点设置失败: " + name, e);
             return defaultValue;
@@ -142,8 +160,13 @@ public class SystemSettings {
      */
     public boolean setFloat(String scope, String name, float value) {
         try {
-            Settings.putFloat(contentResolver, name, value);
-            return true;
+            if ("global".equalsIgnoreCase(scope)) {
+                return Settings.Global.putFloat(contentResolver, name, value);
+            } else if ("secure".equalsIgnoreCase(scope)) {
+                return Settings.Secure.putFloat(contentResolver, name, value);
+            } else {
+                return Settings.System.putFloat(contentResolver, name, value);
+            }
         } catch (Exception e) {
             Log.e(TAG, "写入浮点设置失败: " + name, e);
             return false;
@@ -155,7 +178,7 @@ public class SystemSettings {
      */
     public boolean getBoolean(String scope, String name, boolean defaultValue) {
         try {
-            int value = Settings.getInt(contentResolver, name, defaultValue ? 1 : 0);
+            int value = getInt(scope, name, defaultValue ? 1 : 0);
             return value != 0;
         } catch (Exception e) {
             Log.w(TAG, "读取布尔设置失败: " + name, e);
@@ -167,13 +190,7 @@ public class SystemSettings {
      * 写入布尔设置
      */
     public boolean setBoolean(String scope, String name, boolean value) {
-        try {
-            Settings.putInt(contentResolver, name, value ? 1 : 0);
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "写入布尔设置失败: " + name, e);
-            return false;
-        }
+        return setInt(scope, name, value ? 1 : 0);
     }
     
     /**
@@ -181,9 +198,9 @@ public class SystemSettings {
      */
     public boolean delete(String scope, String name) {
         try {
-            Settings.removeContentObserver(contentResolver, 
-                Settings.URI(scope));
-            return true;
+            // Settings.URI doesn't exist, skip this operation
+            Log.w(TAG, "Settings deletion not supported in current API: " + name);
+            return false;
         } catch (Exception e) {
             Log.e(TAG, "删除设置失败: " + name, e);
             return false;
@@ -254,7 +271,7 @@ public class SystemSettings {
          * 设置屏幕超时时间(毫秒)
          */
         public void setScreenTimeout(int timeoutMs) {
-            settings.setSystem("screen_off_timeout", timeoutMs);
+            settings.setInt("system", Settings.System.SCREEN_OFF_TIMEOUT, timeoutMs);
         }
         
         /**
@@ -262,7 +279,7 @@ public class SystemSettings {
          */
         public boolean isAirplaneModeOn() {
             try {
-                return Settings.Global.getInt(contentResolver, 
+                return Settings.Global.getInt(settings.contentResolver, 
                     Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
             } catch (Exception e) {
                 return false;
@@ -274,7 +291,7 @@ public class SystemSettings {
          */
         public boolean isWifiEnabled() {
             try {
-                return Settings.Secure.getInt(contentResolver, 
+                return Settings.Secure.getInt(settings.contentResolver, 
                     Settings.Secure.WIFI_ON, 0) != 0;
             } catch (Exception e) {
                 return false;
@@ -286,7 +303,7 @@ public class SystemSettings {
          */
         public boolean isBluetoothEnabled() {
             try {
-                return Settings.Secure.getInt(contentResolver, 
+                return Settings.Secure.getInt(settings.contentResolver, 
                     Settings.Secure.BLUETOOTH_ON, 0) != 0;
             } catch (Exception e) {
                 return false;
@@ -316,7 +333,7 @@ public class SystemSettings {
          */
         public void setScreenBrightness(int brightness) {
             brightness = Math.max(0, Math.min(255, brightness));
-            settings.setSystem("screen_brightness", brightness);
+            settings.setInt("system", Settings.System.SCREEN_BRIGHTNESS, brightness);
         }
     }
     

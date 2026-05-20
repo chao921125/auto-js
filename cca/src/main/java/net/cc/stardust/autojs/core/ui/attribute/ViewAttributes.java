@@ -13,7 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.internal.Functions;
 import net.cc.stardust.core.ui.inflater.ResourceParser;
 import net.cc.stardust.core.ui.inflater.util.Dimensions;

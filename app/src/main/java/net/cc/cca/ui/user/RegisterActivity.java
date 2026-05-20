@@ -7,15 +7,11 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityRegisterBinding;
 import net.cc.cca.network.NodeBB;
 import net.cc.cca.network.UserService;
 import net.cc.cca.ui.BaseActivity;
 import com.stardust.theme.ThemeColorManager;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -23,33 +19,32 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Stardust on 2017/10/26.
  */
-@EActivity(R.layout.activity_register)
 public class RegisterActivity extends BaseActivity {
 
-    @ViewById(R.id.email)
-    TextView mEmail;
+    private ActivityRegisterBinding binding;
 
-    @ViewById(R.id.username)
-    TextView mUserName;
-
-    @ViewById(R.id.password)
-    TextView mPassword;
-
-    @ViewById(R.id.register)
-    View mRegister;
-
-
-    @AfterViews
-    void setUpViews() {
-        setToolbarAsBack(getString(R.string.text_register));
-        ThemeColorManager.addViewBackground(mRegister);
+    @Override
+    protected void onCreate(android.os.Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityRegisterBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setUpViews();
+        setupClickListeners();
     }
 
-    @Click(R.id.register)
+    void setUpViews() {
+        setToolbarAsBack(getString(R.string.text_register));
+        ThemeColorManager.addViewBackground(binding.register);
+    }
+
+    private void setupClickListeners() {
+        binding.register.setOnClickListener(v -> login());
+    }
+
     void login() {
-        String email = mEmail.getText().toString();
-        String userName = mUserName.getText().toString();
-        String password = mPassword.getText().toString();
+        String email = binding.email.getText().toString();
+        String userName = binding.username.getText().toString();
+        String password = binding.password.getText().toString();
         if (!validateInput(email, userName, password)) {
             return;
         }
@@ -67,7 +62,7 @@ public class RegisterActivity extends BaseActivity {
                         }
                         , error -> {
                             dialog.dismiss();
-                            mPassword.setError(NodeBB.getErrorMessage(error, RegisterActivity.this, R.string.text_register_fail));
+                            binding.password.setError(NodeBB.getErrorMessage(error, RegisterActivity.this, R.string.text_register_fail));
                         });
 
     }
@@ -79,23 +74,23 @@ public class RegisterActivity extends BaseActivity {
 
     private boolean validateInput(String email, String userName, String password) {
         if (email.isEmpty()) {
-            mEmail.setError(getString(R.string.text_email_cannot_be_empty));
+            binding.email.setError(getString(R.string.text_email_cannot_be_empty));
             return false;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            mEmail.setError(getString(R.string.text_email_format_error));
+            binding.email.setError(getString(R.string.text_email_format_error));
             return false;
         }
         if (userName.isEmpty()) {
-            mUserName.setError(getString(R.string.text_username_cannot_be_empty));
+            binding.username.setError(getString(R.string.text_username_cannot_be_empty));
             return false;
         }
         if (password.isEmpty()) {
-            mUserName.setError(getString(R.string.text_password_cannot_be_empty));
+            binding.username.setError(getString(R.string.text_password_cannot_be_empty));
             return false;
         }
         if (password.length() < 6) {
-            mPassword.setError(getString(R.string.nodebb_error_change_password_error_length));
+            binding.password.setError(getString(R.string.nodebb_error_change_password_error_length));
             return false;
         }
         return true;

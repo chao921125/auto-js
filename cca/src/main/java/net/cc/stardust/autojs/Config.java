@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import net.cc.cca.core.R;
+
 /**
  * Created by Stardust on 2017/12/8.
  */

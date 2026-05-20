@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import com.stardust.enhancedfloaty.util.FloatingWindowPermissionUtil;
 
 import java.lang.reflect.Method;

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import net.cc.stardust.BuildConfig;
+import net.cc.cca.core.BuildConfig;
 import net.cc.stardust.annotation.ScriptInterface;
 import net.cc.stardust.runtime.exception.ScriptInterruptedException;
 import com.stardust.automator.ActionArgument;

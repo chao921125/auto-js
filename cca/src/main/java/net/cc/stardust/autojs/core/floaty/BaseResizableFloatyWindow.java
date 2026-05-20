@@ -10,7 +10,7 @@ import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.ui.ViewExtras;
 import net.cc.stardust.core.ui.inflater.inflaters.Exceptions;
 import net.cc.stardust.runtime.exception.ScriptInterruptedException;

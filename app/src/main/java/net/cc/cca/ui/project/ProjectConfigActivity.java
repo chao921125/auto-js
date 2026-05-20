@@ -17,11 +17,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import net.cc.stardust.project.ProjectConfig;
 import com.stardust.pio.PFiles;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityProjectConfigBinding;
 import net.cc.cca.model.explorer.ExplorerDirPage;
 import net.cc.cca.model.explorer.ExplorerFileItem;
 import net.cc.cca.model.explorer.Explorers;
@@ -29,7 +26,6 @@ import net.cc.cca.model.project.ProjectTemplate;
 import net.cc.cca.theme.dialog.ThemeColorMaterialDialogBuilder;
 import net.cc.cca.ui.BaseActivity;
 import net.cc.cca.ui.shortcut.ShortcutIconSelectActivity;
-import net.cc.cca.ui.shortcut.ShortcutIconSelectActivity_;
 import net.cc.cca.ui.widget.SimpleTextWatcher;
 
 import java.io.File;
@@ -40,7 +36,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-@EActivity(R.layout.activity_project_config)
 public class ProjectConfigActivity extends BaseActivity {
 
     public static final String EXTRA_PARENT_DIRECTORY = "parent_directory";
@@ -52,27 +47,7 @@ public class ProjectConfigActivity extends BaseActivity {
     private static final int REQUEST_CODE = 12477;
     private static final Pattern REGEX_PACKAGE_NAME = Pattern.compile("^([A-Za-z][A-Za-z\\d_]*\\.)+([A-Za-z][A-Za-z\\d_]*)$");
 
-
-    @ViewById(R.id.project_location)
-    EditText mProjectLocation;
-
-    @ViewById(R.id.app_name)
-    EditText mAppName;
-
-    @ViewById(R.id.package_name)
-    EditText mPackageName;
-
-    @ViewById(R.id.version_name)
-    EditText mVersionName;
-
-    @ViewById(R.id.version_code)
-    EditText mVersionCode;
-
-    @ViewById(R.id.main_file_name)
-    EditText mMainFileName;
-
-    @ViewById(R.id.icon)
-    ImageView mIcon;
+    private ActivityProjectConfigBinding binding;
 
     private File mDirectory;
     private File mParentDirectory;
@@ -83,6 +58,9 @@ public class ProjectConfigActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityProjectConfigBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         mNewProject = getIntent().getBooleanExtra(EXTRA_NEW_PROJECT, false);
         String parentDirectory = getIntent().getStringExtra(EXTRA_PARENT_DIRECTORY);
         if (mNewProject) {
@@ -108,36 +86,42 @@ public class ProjectConfigActivity extends BaseActivity {
                         .show();
             }
         }
+        
+        setupViews();
+        setupClickListeners();
     }
 
-    @AfterViews
     void setupViews() {
         if (mProjectConfig == null) {
             return;
         }
         setToolbarAsBack(mNewProject ? getString(R.string.text_new_project) : mProjectConfig.getName());
         if (mNewProject) {
-            mAppName.addTextChangedListener(new SimpleTextWatcher(s ->
-                    mProjectLocation.setText(new File(mParentDirectory, s.toString()).getPath()))
+            binding.appName.addTextChangedListener(new SimpleTextWatcher(s ->
+                    binding.projectLocation.setText(new File(mParentDirectory, s.toString()).getPath()))
             );
         } else {
-            mAppName.setText(mProjectConfig.getName());
-            mVersionCode.setText(String.valueOf(mProjectConfig.getVersionCode()));
-            mPackageName.setText(mProjectConfig.getPackageName());
-            mVersionName.setText(mProjectConfig.getVersionName());
-            mMainFileName.setText(mProjectConfig.getMainScriptFile());
-            mProjectLocation.setVisibility(View.GONE);
+            binding.appName.setText(mProjectConfig.getName());
+            binding.versionCode.setText(String.valueOf(mProjectConfig.getVersionCode()));
+            binding.packageName.setText(mProjectConfig.getPackageName());
+            binding.versionName.setText(mProjectConfig.getVersionName());
+            binding.mainFileName.setText(mProjectConfig.getMainScriptFile());
+            binding.projectLocation.setVisibility(View.GONE);
             String icon = mProjectConfig.getIcon();
             if (icon != null) {
                 Glide.with(this)
                         .load(new File(mDirectory, icon))
-                        .into(mIcon);
+                        .into(binding.icon);
             }
         }
     }
 
+    private void setupClickListeners() {
+        binding.fab.setOnClickListener(v -> commit());
+        binding.icon.setOnClickListener(v -> selectIcon());
+    }
+
     @SuppressLint("CheckResult")
-    @Click(R.id.fab)
     void commit() {
         if (!checkInputs()) {
             return;
@@ -192,11 +176,10 @@ public class ProjectConfigActivity extends BaseActivity {
         }
     }
 
-    @Click(R.id.icon)
     void selectIcon() {
-        ShortcutIconSelectActivity_.intent(this)
-                .flags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-                .startForResult(REQUEST_CODE);
+        Intent intent = new Intent(this, ShortcutIconSelectActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     private void syncProjectConfig() {
@@ -257,7 +240,7 @@ public class ProjectConfigActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmap -> {
-                            mIcon.setImageBitmap(bitmap);
+                            binding.icon.setImageBitmap(bitmap);
                             mIconBitmap = bitmap;
                         },
                         Throwable::printStackTrace);

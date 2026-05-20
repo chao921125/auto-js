@@ -3,7 +3,7 @@ package net.cc.stardust.core.ui;
 import android.util.Log;
 import android.view.View;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.ui.attribute.ViewAttributes;
 import net.cc.stardust.core.ui.attribute.ViewAttributesFactory;
 import net.cc.stardust.core.ui.inflater.ResourceParser;

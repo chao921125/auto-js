@@ -6,7 +6,7 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 
-import com.stardust.automator.BuildConfig
+import net.cc.cca.automator.BuildConfig
 
 import java.util.Arrays
 import java.util.HashMap

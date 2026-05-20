@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.telephony.TelephonyManager;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.runtime.exception.ScriptException;
 import com.stardust.pio.PFiles;
 import com.stardust.pio.UncheckedIOException;
@@ -37,6 +37,18 @@ import ezy.assist.compat.SettingsCompat;
  */
 
 public class Device {
+
+    private Context mContext;
+    private PowerManager.WakeLock mWakeLock;
+    private int mWakeLockFlag;
+
+    public Device() {
+        // Default constructor for compatibility
+    }
+
+    public Device(Context context) {
+        this.mContext = context;
+    }
 
     public static int width = ScreenMetrics.getDeviceScreenWidth();
 

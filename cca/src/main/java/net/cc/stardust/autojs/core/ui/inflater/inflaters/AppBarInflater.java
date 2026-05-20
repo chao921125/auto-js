@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.appbar.AppBarLayout;
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.ui.inflater.ResourceParser;
 import net.cc.stardust.core.ui.inflater.ViewCreator;
 import net.cc.stardust.core.ui.inflater.util.Dimensions;

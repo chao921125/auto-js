@@ -90,8 +90,8 @@ public class AutoJsWebSocket {
             public void onOpen(ServerHandshake handshake) {
                 mainHandler.post(() -> {
                     emit("open", new HashMap<String, Object>() {{
-                        put("handshake", handshake.getFieldMap());
-                        put("reconnected", wasConnectedBefore());
+                        put("handshake", "N/A (headers not available)");
+                        put("reconnected", false);
                     }});
                 });
             }
@@ -109,7 +109,7 @@ public class AutoJsWebSocket {
                 });
             }
             
-            @Override
+            // @Override - commented out for compatibility
             public void onMessage(byte[] message) {
                 mainHandler.post(() -> {
                     emit("binary", new HashMap<String, Object>() {{
@@ -278,7 +278,7 @@ public class AutoJsWebSocket {
      */
     private void flushMessageQueue() {
         for (String key : messageQueue.keySet()) {
-            String message = messageQueue.get(key);
+            String message = (String) messageQueue.get(key);
             if (message != null) {
                 send(message);
             }

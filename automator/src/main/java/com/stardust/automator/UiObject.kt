@@ -25,7 +25,8 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.Accessibilit
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_PAGE_RIGHT
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_PAGE_UP
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_PAGE_DOWN
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_ACCESSIBLE_FOCUS
+// ACTION_ACCESSIBLE_FOCUS is only available in API 29+, skipped for compatibility
+// import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_ACCESSIBLE_FOCUS
 
 /**
  * Created by Stardust on 2017/3/9.
@@ -307,10 +308,11 @@ open class UiObject(info: Any?, private val allocator: AccessibilityNodeInfoAllo
 
     /**
      * 设置无障碍焦点（Android 11+ 增强）
+     * Note: ACTION_ACCESSIBLE_FOCUS is only available in API 29+, skipped for compatibility
      */
-    fun accessibleFocus(): Boolean {
-        return performAction(ACTION_ACCESSIBLE_FOCUS.id)
-    }
+    // fun accessibleFocus(): Boolean {
+    //     return performAction(ACTION_ACCESSIBLE_FOCUS.id)
+    // }
 
     override fun getChild(index: Int): AccessibilityNodeInfoCompat {
         return if (allocator == null) super.getChild(index) else allocator.getChild(this, index)

@@ -37,12 +37,8 @@ import com.stardust.util.BiMap;
 import com.stardust.util.BiMaps;
 import com.stardust.util.MapBuilder;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.CheckedChange;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityTimedTaskSettingBinding;
 import net.cc.cca.external.ScriptIntents;
 import net.cc.cca.external.receiver.DynamicBroadcastReceivers;
 import net.cc.cca.model.script.ScriptFile;
@@ -64,7 +60,6 @@ import java.util.Map;
 /**
  * Created by Stardust on 2017/11/28.
  */
-@EActivity(R.layout.activity_timed_task_setting)
 public class TimedTaskSettingActivity extends BaseActivity {
 
     public static final String EXTRA_INTENT_TASK_ID = "intent_task_id";
@@ -76,94 +71,14 @@ public class TimedTaskSettingActivity extends BaseActivity {
 
     private static final String LOG_TAG = "TimedTaskSettings";
 
-
-    public static final Map<String, Integer> ACTION_DESC_MAP = new MapBuilder<String, Integer>()
-            .put(DynamicBroadcastReceivers.ACTION_STARTUP, R.string.text_run_on_startup)
-            .put(Intent.ACTION_BOOT_COMPLETED, R.string.text_run_on_boot)
-            .put(Intent.ACTION_SCREEN_OFF, R.string.text_run_on_screen_off)
-            .put(Intent.ACTION_SCREEN_ON, R.string.text_run_on_screen_on)
-            .put(Intent.ACTION_USER_PRESENT, R.string.text_run_on_screen_unlock)
-            .put(Intent.ACTION_BATTERY_CHANGED, R.string.text_run_on_battery_change)
-            .put(Intent.ACTION_POWER_CONNECTED, R.string.text_run_on_power_connect)
-            .put(Intent.ACTION_POWER_DISCONNECTED, R.string.text_run_on_power_disconnect)
-            .put(ConnectivityManager.CONNECTIVITY_ACTION, R.string.text_run_on_conn_change)
-            .put(Intent.ACTION_PACKAGE_ADDED, R.string.text_run_on_package_install)
-            .put(Intent.ACTION_PACKAGE_REMOVED, R.string.text_run_on_package_uninstall)
-            .put(Intent.ACTION_PACKAGE_REPLACED, R.string.text_run_on_package_update)
-            .put(Intent.ACTION_HEADSET_PLUG, R.string.text_run_on_headset_plug)
-            .put(Intent.ACTION_CONFIGURATION_CHANGED, R.string.text_run_on_config_change)
-            .put(Intent.ACTION_TIME_TICK, R.string.text_run_on_time_tick)
-            .build();
-
-    private static final BiMap<Integer, String> ACTIONS = BiMaps.<Integer, String>newBuilder()
-            .put(R.id.run_on_startup, DynamicBroadcastReceivers.ACTION_STARTUP)
-            .put(R.id.run_on_boot, Intent.ACTION_BOOT_COMPLETED)
-            .put(R.id.run_on_screen_off, Intent.ACTION_SCREEN_OFF)
-            .put(R.id.run_on_screen_on, Intent.ACTION_SCREEN_ON)
-            .put(R.id.run_on_screen_unlock, Intent.ACTION_USER_PRESENT)
-            .put(R.id.run_on_battery_change, Intent.ACTION_BATTERY_CHANGED)
-            .put(R.id.run_on_power_connect, Intent.ACTION_POWER_CONNECTED)
-            .put(R.id.run_on_power_disconnect, Intent.ACTION_POWER_DISCONNECTED)
-            .put(R.id.run_on_conn_change, ConnectivityManager.CONNECTIVITY_ACTION)
-            .put(R.id.run_on_package_install, Intent.ACTION_PACKAGE_ADDED)
-            .put(R.id.run_on_package_uninstall, Intent.ACTION_PACKAGE_REMOVED)
-            .put(R.id.run_on_package_update, Intent.ACTION_PACKAGE_REPLACED)
-            .put(R.id.run_on_headset_plug, Intent.ACTION_HEADSET_PLUG)
-            .put(R.id.run_on_config_change, Intent.ACTION_CONFIGURATION_CHANGED)
-            .put(R.id.run_on_time_tick, Intent.ACTION_TIME_TICK)
-            .build();
-
-    @ViewById(R.id.toolbar)
-    Toolbar mToolbar;
-
-    @ViewById(R.id.timing_group)
-    RadioGroup mTimingGroup;
-
-    @ViewById(R.id.disposable_task_radio)
-    RadioButton mDisposableTaskRadio;
-
-    @ViewById(R.id.daily_task_radio)
-    RadioButton mDailyTaskRadio;
-
-    @ViewById(R.id.weekly_task_radio)
-    RadioButton mWeeklyTaskRadio;
-
-    @ViewById(R.id.run_on_broadcast)
-    RadioButton mRunOnBroadcastRadio;
-
-    @ViewById(R.id.run_on_other_broadcast)
-    RadioButton mRunOnOtherBroadcast;
-
-    @ViewById(R.id.action)
-    EditText mOtherBroadcastAction;
-
-    @ViewById(R.id.broadcast_group)
-    RadioGroup mBroadcastGroup;
-
-    @ViewById(R.id.disposable_task_time)
-    TextView mDisposableTaskTime;
-
-    @ViewById(R.id.disposable_task_date)
-    TextView mDisposableTaskDate;
-
-    @ViewById(R.id.daily_task_time_picker)
-    TimePicker mDailyTaskTimePicker;
-
-    @ViewById(R.id.weekly_task_time_picker)
-    TimePicker mWeeklyTaskTimePicker;
-
-    @ViewById(R.id.weekly_task_container)
-    LinearLayout mWeeklyTaskContainer;
-
-    private List<CheckBox> mDayOfWeekCheckBoxes = new ArrayList<>();
-
-    private ScriptFile mScriptFile;
-    private TimedTask mTimedTask;
-    private IntentTask mIntentTask;
+    private ActivityTimedTaskSettingBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityTimedTaskSettingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1);
         if (taskId != -1) {
             mTimedTask = TimedTaskManager.getInstance().getTimedTask(taskId);

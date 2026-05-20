@@ -13,6 +13,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
+    
+    buildFeatures {
+        aidl true
+    }
     buildTypes {
         release {
             minifyEnabled true
@@ -25,9 +29,19 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    
+    buildFeatures {
+        buildConfig true
+    }
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
+            aidl.srcDirs = ['src/main/aidl']
         }
     }
     lint {
@@ -70,6 +84,12 @@ dependencies {
     implementation "dev.rikka.shizuku:api:$shizuku_version"
     implementation "dev.rikka.shizuku:provider:$shizuku_version"
 
+    // Java WebSocket
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    
+    // Settings Compat (for floating permissions)
+    implementation 'com.github.hyb1996:settingscompat:1.1.5'
+
     // Terminal emulator
     api project(path: ':cca-aar:libtermexec')
     api project(path: ':cca-aar:emulatorview')
@@ -83,5 +103,15 @@ dependencies {
 //    implementation 'com.rmtheis:tess-two:9.1.0'
     implementation 'com.google.mlkit:text-recognition-chinese:16.0.1'
     implementation 'com.microsoft.onnxruntime:onnxruntime-android:1.15.1'
+    
+    // Exclude all old support libraries to avoid conflicts with AndroidX
+    configurations.configureEach {
+        resolutionStrategy {
+            exclude group: 'com.android.support', module: 'appcompat-v7'
+            exclude group: 'com.android.support', module: 'support-v4'
+            exclude group: 'com.android.support', module: 'support-compat'
+            exclude group: 'com.android.support', module: 'recyclerview-v7'
+        }
+    }
 }
 

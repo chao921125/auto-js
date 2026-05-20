@@ -11,7 +11,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import net.cc.cca.R;
+import net.cc.cca.core.R;
 
 /**
  * 媒体投射通知管理器

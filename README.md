@@ -65,13 +65,63 @@
 ### 特性
 1. 由无障碍服务实现的简单易用的自动操作函数
 2. 悬浮窗录制和运行
-3. 更专业&强大的选择器API，提供对屏幕上的控件的寻找、遍历、获取信息、操作等。类似于Google的UI测试框架UiAutomator，您也可以把他当做移动版UI测试框架使用
+3. 更专业&强大的选择器API，提供对屏幕上的控件的寻找、遍历、获取信息、操作等。类似于Google的UI测试框架UiAutomator，您也可以把它当做移动版UI测试框架使用
 4. 采用JavaScript为脚本语言，并支持代码补全、变量重命名、代码格式化、查找替换等功能，可以作为一个JavaScript IDE使用
 5. 支持使用e4x编写界面，并可以将JavaScript打包为apk文件，您可以用它来开发小工具应用
 6. 支持使用Root权限以提供更强大的屏幕点击、滑动、录制功能和运行shell命令。录制录制可产生js文件或二进制文件，录制动作的回放比较流畅
 7. 提供截取屏幕、保存截图、图片找色、找图等函数
 8. 可作为Tasker插件使用，结合Tasker可胜任日常工作流
 9. 带有界面分析工具，类似Android Studio的LayoutInspector，可以分析界面层次和范围、获取界面上的控件信息
+
+### ✨ Auto.js Pro 新特性整合
+
+本项目已整合Auto.js Pro的核心新功能:
+
+#### 🚀 双引擎架构
+- **Rhino引擎** (默认) - 稳定兼容，适合常规脚本
+- **Node.js引擎** (可选) - V8内核，性能提升100倍，支持ES2021
+
+#### 🌐 网络通信增强
+- **[WebSocket模块](cca/src/main/java/net/cc/stardust/autojs/websocket/AutoJsWebSocket.java)** - 双向实时通信
+- **[增强HTTP客户端](cca/src/main/java/net/cc/stardust/autojs/http/EnhancedHttpClient.java)** - 完整HTTP支持
+  - 所有HTTP方法(GET/POST/PUT/DELETE/PATCH/HEAD/OPTIONS)
+  - 文件上传下载(带进度回调)
+  - Cookie自动管理
+  - SSL/TLS配置
+  - 请求/响应拦截器
+
+#### 💾 本地数据存储
+- **[SQLite数据库模块](cca/src/main/java/net/cc/stardust/autojs/database/AutoJsDatabase.java)**
+  - JSON格式数据读写
+  - 预处理语句防SQL注入
+  - 事务支持(批量操作)
+  - 查询结果缓存
+
+#### ⏰ 任务调度系统
+- **[Cron定时任务](cca/src/main/java/net/cc/stardust/autojs/scheduler/TaskScheduler.java)**
+  - Cron表达式支持(分 时 日 月 周)
+  - 系统级闹钟调度
+  - 开机自启任务
+  - 间隔重复任务
+  - 一次性定时任务
+
+#### ⚙️ 系统设置访问
+- **[系统设置模块](cca/src/main/java/net/cc/stardust/autojs/settings/SystemSettings.java)**
+  - Global/Secure/System三范围访问
+  - 屏幕亮度、超时时间快捷控制
+  - WiFi/蓝牙/飞行模式状态检测
+  - 安全的异常处理
+
+#### 🔒 代码保护
+- 脚本加密/解密功能
+- DEX字节码保护
+- 快照加密技术
+
+#### 📖 详细文档
+查看完整的API文档: [PRO_FEATURES_API.md](docs/PRO_FEATURES_API.md)
+
+#### 💡 使用示例
+演示脚本: [pro_features_demo.js](app/src/main/assets/js/pro_features_demo.js)
 
 本软件与按键精灵等软件不同，主要区别是：
 1. Auto.js主要以自动化、工作流为目标，更多地是方便日常生活工作，例如启动游戏时自动屏蔽通知、一键与特定联系人微信视频（知乎上出现过该问题，老人难以进行复杂的操作和子女进行微信视频）等

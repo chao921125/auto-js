@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import com.stardust.util.MapBuilder;
 import com.stardust.util.SparseArrayEntries;
 

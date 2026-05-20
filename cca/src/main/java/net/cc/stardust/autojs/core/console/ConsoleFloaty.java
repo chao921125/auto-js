@@ -13,7 +13,7 @@ import com.stardust.enhancedfloaty.ResizableExpandableFloaty;
 import com.stardust.enhancedfloaty.ResizableExpandableFloatyWindow;
 import com.stardust.util.ScreenMetrics;
 import com.stardust.util.ViewUtil;
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 
 /**
  * Created by Stardust on 2017/4/20.

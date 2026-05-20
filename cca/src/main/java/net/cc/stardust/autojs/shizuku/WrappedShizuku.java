@@ -1,4 +1,4 @@
-package net.cc.stardust.shizuku;
+package net.cc.stardust.autojs.shizuku;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import com.stardust.app.GlobalAppContext;
 import net.cc.stardust.annotation.ScriptInterface;
 import net.cc.stardust.runtime.api.AbstractShell;
 import com.tony.shizuku.shell.plugin.IUserService;
-import net.cc.stardust.BuildConfig;
+import net.cc.cca.core.BuildConfig;
 
 import rikka.shizuku.Shizuku;
 

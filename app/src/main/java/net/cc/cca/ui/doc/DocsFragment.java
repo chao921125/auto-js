@@ -10,6 +10,7 @@ import android.webkit.WebView;
 
 import net.cc.cca.Pref;
 import net.cc.cca.R;
+import net.cc.cca.databinding.FragmentOnlineDocsBinding;
 import net.cc.cca.ui.main.QueryEvent;
 import net.cc.cca.ui.main.ViewPagerFragment;
 
@@ -17,23 +18,18 @@ import com.stardust.util.BackPressedHandler;
 
 import net.cc.cca.ui.widget.EWebView;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by Stardust on 2017/8/22.
  */
-@EFragment(R.layout.fragment_online_docs)
 public class DocsFragment extends ViewPagerFragment implements BackPressedHandler {
 
     public static final String ARGUMENT_URL = "url";
 
-    @ViewById(R.id.eweb_view)
-    EWebView mEWebView;
-    WebView mWebView;
+    private FragmentOnlineDocsBinding binding;
+    private WebView mWebView;
 
     private String mIndexUrl;
     private String mPreviousQuery;
@@ -44,22 +40,34 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
         setArguments(new Bundle());
     }
 
+    @Nullable
+    @Override
+    public android.view.View onCreateView(android.view.LayoutInflater inflater, @Nullable android.view.ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentOnlineDocsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpViews();
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
     }
 
-    @AfterViews
     void setUpViews() {
-        mWebView = mEWebView.getWebView();
+        mWebView = binding.ewebView.getWebView();
         mWebView.getSettings().setSupportZoom(false);
         mWebView.getSettings().setBuiltInZoomControls(false);
-        mEWebView.getSwipeRefreshLayout().setOnRefreshListener(() -> {
+        binding.ewebView.getSwipeRefreshLayout().setOnRefreshListener(() -> {
             if (TextUtils.equals(mWebView.getUrl(), mIndexUrl)) {
                 loadUrl();
             } else {
-                mEWebView.onRefresh();
+                binding.ewebView.onRefresh();
             }
         });
         Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");

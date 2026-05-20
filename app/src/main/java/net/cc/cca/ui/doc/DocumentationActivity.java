@@ -4,30 +4,31 @@ import android.webkit.WebView;
 
 import net.cc.cca.Pref;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityDocumentationBinding;
 import net.cc.cca.ui.BaseActivity;
 import net.cc.cca.ui.widget.EWebView;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 
 /**
  * Created by Stardust on 2017/10/24.
  */
-@EActivity(R.layout.activity_documentation)
 public class DocumentationActivity extends BaseActivity {
 
     public static final String EXTRA_URL = "url";
 
-    @ViewById(R.id.eweb_view)
-    EWebView mEWebView;
+    private ActivityDocumentationBinding binding;
+    private android.webkit.WebView mWebView;
 
-    WebView mWebView;
+    @Override
+    protected void onCreate(android.os.Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityDocumentationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setUpViews();
+    }
 
-    @AfterViews
     void setUpViews() {
         setToolbarAsBack(getString(R.string.text_tutorial));
-        mWebView = mEWebView.getWebView();
+        mWebView = binding.ewebView.getWebView();
         String url = getIntent().getStringExtra(EXTRA_URL);
         if (url == null) {
             url = Pref.getDocumentationUrl() + "index.html";

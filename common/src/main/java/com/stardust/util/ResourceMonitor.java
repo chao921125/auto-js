@@ -5,7 +5,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.stardust.BuildConfig;
+import net.cc.cca.common.BuildConfig;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;

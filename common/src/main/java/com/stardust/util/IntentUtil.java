@@ -12,7 +12,7 @@ import androidx.core.content.FileProvider;
 import android.os.Build;
 import android.widget.Toast;
 
-import com.stardust.R;
+import net.cc.cca.common.R;
 
 import java.io.File;
 

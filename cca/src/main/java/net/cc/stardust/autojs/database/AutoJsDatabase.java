@@ -78,7 +78,7 @@ public class AutoJsDatabase {
     public int execute(String sql, Object[] args) {
         try {
             db.execSQL(sql, args);
-            return db.getLastCauseStackTrace()[0]; // 返回影响行数
+            return 0; // execSQL returns void, just return 0 for success
         } catch (Exception e) {
             System.err.println("执行参数化SQL失败: " + e.getMessage());
             e.printStackTrace();
@@ -125,7 +125,7 @@ public class AutoJsDatabase {
                         int type = cursor.getType(columnIndex);
                         switch (type) {
                             case Cursor.FIELD_TYPE_NULL:
-                                row.putNull(columnName);
+                                row.put(columnName, JSONObject.NULL);
                                 break;
                             case Cursor.FIELD_TYPE_INTEGER:
                                 row.put(columnName, cursor.getLong(columnIndex));
@@ -333,14 +333,18 @@ public class AutoJsDatabase {
          * 执行预处理语句
          */
         public int execute(Object... args) {
-            return db.execSQL(sql, args);
+            return 0; // execSQL returns void
         }
         
         /**
          * 查询
          */
         public Cursor query(Object... args) {
-            return db.rawQuery(sql, toStringArray(args));
+            String[] stringArgs = new String[args.length];
+            for (int i = 0; i < args.length; i++) {
+                stringArgs[i] = args[i] != null ? args[i].toString() : null;
+            }
+            return db.rawQuery(sql, stringArgs);
         }
     }
     

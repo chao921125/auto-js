@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import butterknife.BindView
 import com.google.android.material.snackbar.Snackbar
 import com.stardust.util.ClipboardUtil
 import com.stardust.util.sortedArrayOf
 import com.stardust.view.accessibility.NodeInfo
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import net.cc.cca.R
 import java.lang.reflect.Field
 
@@ -54,10 +53,9 @@ class NodeInfoView : RecyclerView {
         initData()
         adapter = Adapter()
         layoutManager = LinearLayoutManager(context)
-        addItemDecoration(HorizontalDividerItemDecoration.Builder(context)
-                .color(0x1e000000)
-                .size(2)
-                .build())
+        // Use AndroidX DividerItemDecoration instead of old library
+        val divider = DividerItemDecoration(context, VERTICAL)
+        addItemDecoration(divider)
     }
 
     private fun initData() {
@@ -96,8 +94,6 @@ class NodeInfoView : RecyclerView {
 
     internal inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        @BindView(R.id.name)
-        @JvmField
         var attrName: TextView = itemView.findViewById(R.id.name)
 
         val attrValue: TextView = itemView.findViewById(R.id.value)

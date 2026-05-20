@@ -16,10 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityShortcutIconSelectBinding;
 import net.cc.cca.tool.BitmapTool;
 import net.cc.cca.ui.BaseActivity;
 import net.cc.cca.workground.WrapContentGridLayoutManger;
@@ -35,18 +33,22 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Stardust on 2017/10/25.
  */
-@EActivity(R.layout.activity_shortcut_icon_select)
 public class ShortcutIconSelectActivity extends BaseActivity {
 
     public static final String EXTRA_PACKAGE_NAME = "extra_package_name";
 
-    @ViewById(R.id.apps)
-    RecyclerView mApps;
-
+    private ActivityShortcutIconSelectBinding binding;
     private PackageManager mPackageManager;
     private List<AppItem> mAppList = new ArrayList<>();
 
-    @AfterViews
+    @Override
+    protected void onCreate(android.os.Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityShortcutIconSelectBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setupViews();
+    }
+
     void setupViews() {
         mPackageManager = getPackageManager();
         setToolbarAsBack(getString(R.string.text_select_icon));
@@ -54,10 +56,10 @@ public class ShortcutIconSelectActivity extends BaseActivity {
     }
 
     private void setupApps() {
-        mApps.setAdapter(new AppsAdapter());
+        binding.apps.setAdapter(new AppsAdapter());
         WrapContentGridLayoutManger manager = new WrapContentGridLayoutManger(this, 5);
         manager.setDebugInfo("IconSelectView");
-        mApps.setLayoutManager(manager);
+        binding.apps.setLayoutManager(manager);
         loadApps();
     }
 
@@ -71,7 +73,7 @@ public class ShortcutIconSelectActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(icon -> {
                     mAppList.add(icon);
-                    mApps.getAdapter().notifyItemInserted(mAppList.size() - 1);
+                    binding.apps.getAdapter().notifyItemInserted(mAppList.size() - 1);
                 });
 
     }

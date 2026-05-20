@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.TimePicker;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.ui.inflater.ResourceParser;
 import net.cc.stardust.core.ui.inflater.ViewCreator;
 

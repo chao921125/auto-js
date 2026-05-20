@@ -23,34 +23,31 @@ import com.stardust.app.OnActivityResultDelegate;
 import net.cc.stardust.core.permission.OnRequestPermissionsResultCallback;
 import net.cc.stardust.core.permission.PermissionRequestProxyActivity;
 import net.cc.stardust.core.permission.RequestPermissionCallbacks;
-import net.cc.stardust.shizuku.WrappedShizuku;
+import net.cc.stardust.autojs.shizuku.WrappedShizuku;
 import com.stardust.enhancedfloaty.FloatyService;
 import com.stardust.pio.PFiles;
 import com.stardust.theme.ThemeColorManager;
 import com.stardust.util.BackPressedHandler;
 import com.stardust.util.DrawerAutoClose;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import net.cc.cca.BuildConfig;
 import net.cc.cca.Pref;
 import net.cc.cca.R;
 import net.cc.cca.autojs.AutoJs;
+import net.cc.cca.databinding.ActivityMainBinding;
 import net.cc.cca.external.foreground.ForegroundService;
 import net.cc.cca.model.explorer.Explorers;
 import net.cc.cca.timing.TimedTaskScheduler;
 import net.cc.cca.tool.AccessibilityServiceTool;
 import net.cc.cca.ui.BaseActivity;
 import net.cc.cca.ui.common.NotAskAgainDialog;
-import net.cc.cca.ui.doc.DocsFragment_;
+import net.cc.cca.ui.doc.DocsFragment;
 import net.cc.cca.ui.floating.FloatyWindowManger;
-import net.cc.cca.ui.log.LogActivity_;
+import net.cc.cca.ui.log.LogActivity;
 import net.cc.cca.ui.main.community.CommunityFragment;
-import net.cc.cca.ui.main.scripts.MyScriptListFragment_;
-import net.cc.cca.ui.main.task.TaskManagerFragment_;
-import net.cc.cca.ui.settings.SettingsActivity_;
+import net.cc.cca.ui.main.scripts.MyScriptListFragment;
+import net.cc.cca.ui.main.task.TaskManagerFragment;
+import net.cc.cca.ui.settings.SettingsActivity;
 import net.cc.cca.ui.widget.CommonMarkdownView;
 import net.cc.cca.ui.widget.SearchViewItem;
 import org.greenrobot.eventbus.EventBus;
@@ -69,7 +66,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-@EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {
 
     public static class DrawerOpenEvent {
@@ -78,15 +74,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     private static final String LOG_TAG = "MainActivity";
 
-
-    @ViewById(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-
-    @ViewById(R.id.viewpager)
-    ViewPager mViewPager;
-
-    @ViewById(R.id.fab)
-    FloatingActionButton mFab;
+    private ActivityMainBinding binding;
 
     private static final Pattern SERVICE_PATTERN = Pattern.compile("^(((\\w+\\.)+\\w+)[/]?){2}$");
 
@@ -102,28 +90,38 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         checkPermissions();
         showAccessibilitySettingPromptIfDisabled();
         showAnnunciationIfNeeded();
         EventBus.getDefault().register(this);
         applyDayNightMode();
         WrappedShizuku.getInstance().onCreate(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_CODE);
+        
+        setUpViews();
+        setupClickListeners();
     }
 
-    @AfterViews
     void setUpViews() {
         setUpToolbar();
         setUpTabViewPager();
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         registerBackPressHandlers();
-        ThemeColorManager.addViewBackground(findViewById(R.id.app_bar));
-        mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+        ThemeColorManager.addViewBackground(binding.appBar);
+        binding.drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
                 EventBus.getDefault().post(DrawerOpenEvent.SINGLETON);
             }
         });
+    }
+
+    private void setupClickListeners() {
+        binding.setting.setOnClickListener(v -> startSettingActivity());
+        binding.exit.setOnClickListener(v -> exitCompletely());
     }
 
     private void showAnnunciationIfNeeded() {
@@ -141,7 +139,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
 
     private void registerBackPressHandlers() {
-        mBackPressObserver.registerHandler(new DrawerAutoClose(mDrawerLayout, Gravity.START));
+        mBackPressObserver.registerHandler(new DrawerAutoClose(binding.drawerLayout, Gravity.START));
         mBackPressObserver.registerHandler(new BackPressedHandler.DoublePressExit(this, R.string.text_press_again_to_exit));
     }
 
@@ -196,35 +194,33 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
     private void setUpToolbar() {
-        Toolbar toolbar = $(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.app_name);
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.text_drawer_open,
+        setSupportActionBar(binding.toolbar);
+        binding.toolbar.setTitle(R.string.app_name);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.text_drawer_open,
                 R.string.text_drawer_close);
         drawerToggle.syncState();
-        mDrawerLayout.addDrawerListener(drawerToggle);
+        binding.drawerLayout.addDrawerListener(drawerToggle);
     }
 
     private void setUpTabViewPager() {
-        TabLayout tabLayout = $(R.id.tab);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
-                .add(new MyScriptListFragment_(), R.string.text_file)
-                .add(new DocsFragment_(), R.string.text_tutorial)
-                .add(new TaskManagerFragment_(), R.string.text_manage)
+                .add(new MyScriptListFragment(), R.string.text_file)
+                .add(new DocsFragment(), R.string.text_tutorial)
+                .add(new TaskManagerFragment(), R.string.text_manage)
                 .build();
-        mViewPager.setAdapter(mPagerAdapter);
-        tabLayout.setupWithViewPager(mViewPager);
+        binding.viewpager.setAdapter(mPagerAdapter);
+        binding.tab.setupWithViewPager(binding.viewpager);
         setUpViewPagerFragmentBehaviors();
     }
 
     private void setUpViewPagerFragmentBehaviors() {
         mPagerAdapter.setOnFragmentInstantiateListener((pos, fragment) -> {
-            ((ViewPagerFragment) fragment).setFab(mFab);
-            if (pos == mViewPager.getCurrentItem()) {
+            ((ViewPagerFragment) fragment).setFab(binding.fab);
+            if (pos == binding.viewpager.getCurrentItem()) {
                 ((ViewPagerFragment) fragment).onPageShow();
             }
         });
-        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        binding.viewpager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             private ViewPagerFragment mPreviousFragment;
 
             @Override
@@ -242,12 +238,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
 
-    @Click(R.id.setting)
     void startSettingActivity() {
-        startActivity(new Intent(this, SettingsActivity_.class));
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
-    @Click(R.id.exit)
     public void exitCompletely() {
         finish();
         FloatyWindowManger.hideCircularMenu();
@@ -312,7 +306,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = mPagerAdapter.getStoredFragment(mViewPager.getCurrentItem());
+        Fragment fragment = mPagerAdapter.getStoredFragment(binding.viewpager.getCurrentItem());
         if (fragment instanceof BackPressedHandler) {
             if (((BackPressedHandler) fragment).onBackPressed(this)) {
                 return;
@@ -355,7 +349,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             if (mDocsSearchItemExpanded) {
                 submitForwardQuery();
             } else {
-                LogActivity_.intent(this).start();
+                startActivity(new Intent(this, LogActivity.class));
             }
             return true;
         }
@@ -364,7 +358,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Subscribe
     public void onLoadUrl(CommunityFragment.LoadUrl loadUrl) {
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
     }
 
 

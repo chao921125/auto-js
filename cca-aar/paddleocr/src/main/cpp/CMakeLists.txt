@@ -26,8 +26,9 @@ set(CMAKE_CXX_FLAGS
         "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -fdata-sections -ffunction-sections"
         )
 # Allow local symbols in global part for compatibility with PaddleLite
+# Removed --permissive as it's not supported by LLD linker (NDK 26+)
 set(CMAKE_SHARED_LINKER_FLAGS
-        "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,-z,nocopyreloc -Wl,--permissive"
+        "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,-z,nocopyreloc -Wl,--build-id=none"
         )
 
 add_library(        # Sets the name of the library.
@@ -62,10 +63,18 @@ set_target_properties(
 )
 
 # Linker options to handle PaddleLite symbol issues
-target_link_options(Native PRIVATE
-        "-Wl,--allow-shlib-undefined"
-        "-Wl,--fix-cortex-a8"
-)
+# Note: --fix-cortex-a8 is only for ARMv7, not ARM64
+if("${ANDROID_ABI}" STREQUAL "armeabi-v7a")
+    target_link_options(Native PRIVATE
+            "-Wl,--allow-shlib-undefined"
+            "-Wl,--fix-cortex-a8"
+    )
+else()
+    # For arm64-v8a and other 64-bit ABIs
+    target_link_options(Native PRIVATE
+            "-Wl,--allow-shlib-undefined"
+    )
+endif()
 
 
 # Specifies libraries CMake should link to your target library. You can link

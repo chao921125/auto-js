@@ -12,7 +12,7 @@ import android.provider.Settings;
 import android.view.KeyEvent;
 
 import com.stardust.app.GlobalAppContext;
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.accessibility.AccessibilityBridge;
 import net.cc.stardust.core.boardcast.BroadcastEmitter;
 import net.cc.stardust.core.eventloop.EventEmitter;

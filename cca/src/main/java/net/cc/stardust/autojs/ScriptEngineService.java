@@ -3,6 +3,8 @@ package net.cc.stardust;
 import android.content.Context;
 import androidx.annotation.Nullable;
 
+import net.cc.cca.core.R;
+
 import net.cc.stardust.engine.JavaScriptEngine;
 import net.cc.stardust.engine.ScriptEngine;
 import net.cc.stardust.engine.ScriptEngineManager;

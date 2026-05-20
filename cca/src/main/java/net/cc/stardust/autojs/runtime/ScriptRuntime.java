@@ -6,7 +6,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.stardust.app.GlobalAppContext;
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.ScriptEngineService;
 import net.cc.stardust.annotation.ScriptVariable;
 import net.cc.stardust.core.accessibility.AccessibilityBridge;
@@ -25,7 +25,8 @@ import net.cc.stardust.runtime.api.AbstractShell;
 import net.cc.stardust.runtime.api.AppUtils;
 import net.cc.stardust.runtime.api.Console;
 import net.cc.stardust.runtime.api.Device;
-import net.cc.stardust.runtime.api.Dialogs;
+// Dialogs temporarily disabled
+// import net.cc.stardust.runtime.api.Dialogs;
 import net.cc.stardust.runtime.api.Engines;
 import net.cc.stardust.runtime.api.Events;
 import net.cc.stardust.runtime.api.Files;
@@ -43,7 +44,8 @@ import net.cc.stardust.runtime.api.Yolo;
 import net.cc.stardust.runtime.exception.ScriptEnvironmentException;
 import net.cc.stardust.runtime.exception.ScriptException;
 import net.cc.stardust.runtime.exception.ScriptInterruptedException;
-import net.cc.stardust.shizuku.WrappedShizuku;
+// Shizuku integration temporarily disabled
+// import net.cc.stardust.shizuku.WrappedShizuku;
 import com.stardust.concurrent.VolatileDispose;
 import com.stardust.lang.ThreadCompat;
 import com.stardust.pio.UncheckedIOException;
@@ -149,8 +151,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public final UI ui;
 
-    @ScriptVariable
-    public final Dialogs dialogs;
+    // Dialogs temporarily disabled
+    // @ScriptVariable
+    // public final Dialogs dialogs;
 
     @ScriptVariable
     public Events events;
@@ -203,8 +206,9 @@ public class ScriptRuntime {
     @ScriptVariable
     public MlKitOCR mlKitOCR;
 
-    @ScriptVariable
-    public WrappedShizuku shizuku;
+    // Shizuku integration temporarily disabled
+    // @ScriptVariable
+    // public WrappedShizuku shizuku;
 
     @ScriptVariable
     public Yolo yolo;
@@ -234,7 +238,7 @@ public class ScriptRuntime {
         this.info = accessibilityBridge.getInfoProvider();
         images = new Images(context, this, builder.mScreenCaptureRequester);
         engines = new Engines(builder.mEngineService, this);
-        dialogs = new Dialogs(this);
+        // dialogs = new Dialogs(this);
         device = new Device(context);
         floaty = new Floaty(uiHandler, ui, this);
         files = new Files(this);
@@ -242,7 +246,8 @@ public class ScriptRuntime {
         plugins = new Plugins(context, this);
         ocr = new OCR();
         mlKitOCR = new MlKitOCR();
-        shizuku = WrappedShizuku.getInstance();
+        // Shizuku integration temporarily disabled
+        // shizuku = WrappedShizuku.getInstance();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             yolo = new Yolo();
         }

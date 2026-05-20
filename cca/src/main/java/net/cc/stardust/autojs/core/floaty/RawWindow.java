@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 
-import net.cc.stardust.R;
+import net.cc.cca.core.R;
 import net.cc.stardust.core.accessibility.AccessibilityService;
 import net.cc.stardust.core.ui.ViewExtras;
 import net.cc.stardust.core.ui.inflater.inflaters.Exceptions;

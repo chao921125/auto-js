@@ -5,30 +5,31 @@ import androidx.annotation.NonNull;
 
 import com.stardust.app.OnActivityResultDelegate;
 import net.cc.cca.R;
+import net.cc.cca.databinding.ActivityWebBinding;
 import net.cc.cca.ui.BaseActivity;
 import net.cc.cca.ui.widget.EWebView;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 
 /**
  * Created by Stardust on 2017/10/26.
  */
-@EActivity(R.layout.activity_web)
 public class WebActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost {
 
     public static final String EXTRA_URL = "url";
 
     private OnActivityResultDelegate.Mediator mMediator = new OnActivityResultDelegate.Mediator();
+    private ActivityWebBinding binding;
 
-    @ViewById(R.id.eweb_view)
-    EWebView mEWebView;
+    @Override
+    protected void onCreate(android.os.Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityWebBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setupViews();
+    }
 
-    @AfterViews
     void setupViews() {
         setToolbarAsBack(getIntent().getStringExtra(Intent.EXTRA_TITLE));
-        mEWebView.getWebView().loadUrl(getIntent().getStringExtra(EXTRA_URL));
+        binding.ewebView.getWebView().loadUrl(getIntent().getStringExtra(EXTRA_URL));
     }
 
     @Override
