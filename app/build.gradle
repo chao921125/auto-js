@@ -240,10 +240,6 @@ dependencies {
     // Android job
     implementation 'com.evernote:android-job:1.4.2'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:2.12'
-    // Optional, if you use support library fragments (LeakCanary 2.x uses this):
-    // Note: In LeakCanary 2.x, the support fragment module is renamed
-    // debugImplementation 'com.squareup.leakcanary:leakcanary-object-watcher-android-support-fragments:2.12'
     implementation project(':automator')
     implementation project(':common')
     implementation project(':cca')

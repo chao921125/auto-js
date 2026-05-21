@@ -6,9 +6,9 @@
 /.idea/libraries
 /.idea/caches
 .DS_Store
-/*/build/
+**/*/build/
 /autojs-aar/*/build/
-/release
+*/release
 /captures
 .externalNativeBuild
 *.apk
@@ -18,3 +18,4 @@
 *.log
 .settings/
 .vscode/
+ccauto.jks
