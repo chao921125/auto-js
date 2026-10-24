@@ -1,0 +1,113 @@
+
+[
+  {
+    "id": "deps",
+    "content": "更新依赖和构建配置",
+    "activeForm": "更新依赖和构建配置",
+    "description": "更新 Deps.kt 添加 ONNX Runtime/Shizuku/Sora Editor 等依赖，更新 settings.gradle.kts 添加新模块",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "ml",
+    "content": "创建 toolkit/ml 模块（YOLOv8 目标检测）",
+    "activeForm": "创建 YOLOv8 目标检测模块",
+    "description": "使用 ONNX Runtime 替代旧版 NCNN，实现 YOLOv8 检测器和 ml 命名空间 API",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "notification",
+    "content": "创建 toolkit/notification 模块（通知监听）",
+    "activeForm": "创建通知监听模块",
+    "description": "NotificationListenerService 实现通知监听和触发",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "shizuku",
+    "content": "创建 toolkit/shizuku 模块（Shizuku 支持）",
+    "activeForm": "创建 Shizuku 支持模块",
+    "description": "使用 Shizuku SDK 实现高权限操作",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "inspector",
+    "content": "创建 feature/inspector 模块（布局分析器）",
+    "activeForm": "创建布局分析器模块",
+    "description": "LayoutInspector 元素树浏览和元素拾取",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "devplugin",
+    "content": "创建 feature/devplugin 模块（VS Code 联动）",
+    "activeForm": "创建 VS Code 联动模块",
+    "description": "WebSocket 协议实现 VS Code 插件联动",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "tasker",
+    "content": "创建 feature/tasker 模块（Tasker 插件）",
+    "activeForm": "创建 Tasker 插件模块",
+    "description": "Tasker 插件集成",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "app-enhance",
+    "content": "增强 app 模块（桌面小部件/快捷方式/自动补全）",
+    "activeForm": "增强 app 模块",
+    "description": "添加桌面小部件、快捷方式、代码自动补全（Sora Editor）",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "samples",
+    "content": "移植示例脚本",
+    "activeForm": "移植示例脚本",
+    "description": "将旧版关键示例脚本移植到新版",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "verify",
+    "content": "验证构建和模块集成",
+    "activeForm": "验证构建和模块集成",
+    "description": "确保所有新模块能正确集成，构建通过",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  }
+]

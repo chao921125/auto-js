@@ -4,36 +4,72 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/autoengine" name="autoengine">
+                <projects>
+                  <project path="$PROJECT_DIR$/autoengine" />
+                  <project path="$PROJECT_DIR$/autoengine/app" />
+                  <project path="$PROJECT_DIR$/autoengine/core" />
+                  <project path="$PROJECT_DIR$/autoengine/core/api" />
+                  <project path="$PROJECT_DIR$/autoengine/core/runtime" />
+                  <project path="$PROJECT_DIR$/autoengine/feature" />
+                  <project path="$PROJECT_DIR$/autoengine/feature/devplugin" />
+                  <project path="$PROJECT_DIR$/autoengine/feature/inspector" />
+                  <project path="$PROJECT_DIR$/autoengine/feature/packager" />
+                  <project path="$PROJECT_DIR$/autoengine/feature/scheduler" />
+                  <project path="$PROJECT_DIR$/autoengine/feature/tasker" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/accessibility" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/device" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/floaty" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/ml" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/network" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/notification" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/shell" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/shizuku" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/storage" />
+                  <project path="$PROJECT_DIR$/autoengine/toolkit/vision" />
+                </projects>
+              </build>
+              <build path="$PROJECT_DIR$/autoengine/buildSrc" name="buildSrc">
+                <projects>
+                  <project path="$PROJECT_DIR$/autoengine/buildSrc" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="testRunner" value="CHOOSE_PER_TEST" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/apkbuilder" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/automator" />
-            <option value="$PROJECT_DIR$/cca" />
-            <option value="$PROJECT_DIR$/cca-aar" />
-            <option value="$PROJECT_DIR$/cca-aar/apksigner" />
-            <option value="$PROJECT_DIR$/cca-aar/emulatorview" />
-            <option value="$PROJECT_DIR$/cca-aar/libtermexec" />
-            <option value="$PROJECT_DIR$/cca-aar/opencv" />
-            <option value="$PROJECT_DIR$/cca-aar/opencvhelper" />
-            <option value="$PROJECT_DIR$/cca-aar/paddleocr" />
-            <option value="$PROJECT_DIR$/cca-aar/rhino-jdk7" />
-            <option value="$PROJECT_DIR$/cca-aar/rootshell" />
-            <option value="$PROJECT_DIR$/cca-aar/term" />
-            <option value="$PROJECT_DIR$/cca-aar/yolov8ncnn" />
-            <option value="$PROJECT_DIR$/common" />
-            <option value="$PROJECT_DIR$/inrt" />
-            <option value="$PROJECT_DIR$/js-supports" />
-            <option value="$PROJECT_DIR$/js-supports/cca-tool-color-center" />
-            <option value="$PROJECT_DIR$/js-supports/cca-tool-common" />
-            <option value="$PROJECT_DIR$/js-supports/cca-tool-download" />
-            <option value="$PROJECT_DIR$/js-supports/cca-tool-encrypt" />
-            <option value="$PROJECT_DIR$/js-supports/cca-tool-webview" />
-            <option value="$PROJECT_DIR$/js-supports/native-lib" />
+            <option value="$PROJECT_DIR$/autoengine" />
+            <option value="$PROJECT_DIR$/autoengine/app" />
+            <option value="$PROJECT_DIR$/autoengine/buildSrc" />
+            <option value="$PROJECT_DIR$/autoengine/core" />
+            <option value="$PROJECT_DIR$/autoengine/core/api" />
+            <option value="$PROJECT_DIR$/autoengine/core/runtime" />
+            <option value="$PROJECT_DIR$/autoengine/feature" />
+            <option value="$PROJECT_DIR$/autoengine/feature/devplugin" />
+            <option value="$PROJECT_DIR$/autoengine/feature/inspector" />
+            <option value="$PROJECT_DIR$/autoengine/feature/packager" />
+            <option value="$PROJECT_DIR$/autoengine/feature/scheduler" />
+            <option value="$PROJECT_DIR$/autoengine/feature/tasker" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/accessibility" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/device" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/floaty" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/ml" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/network" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/notification" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/shell" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/shizuku" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/storage" />
+            <option value="$PROJECT_DIR$/autoengine/toolkit/vision" />
           </set>
         </option>
       </GradleProjectSettings>

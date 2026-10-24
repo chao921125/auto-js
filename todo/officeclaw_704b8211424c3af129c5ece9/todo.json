@@ -1,0 +1,47 @@
+
+[
+  {
+    "id": "move-dirs",
+    "content": "创建分层目录并移动模块",
+    "activeForm": "创建分层目录并移动模块",
+    "description": "创建 core/、toolkit/、feature/ 父目录，将 12 个模块移入对应层，同时移动模块内 Kotlin 包目录",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "update-packages",
+    "content": "更新所有 Kotlin 包声明和 import",
+    "activeForm": "更新 Kotlin 包声明和 import",
+    "description": "将 org.autojs.lib.* → org.autojs.toolkit.*，org.autojs.scheduler/packager → org.autojs.feature.*，批量更新所有 .kt 文件",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "update-build",
+    "content": "更新所有构建配置文件",
+    "activeForm": "更新构建配置文件",
+    "description": "更新 settings.gradle.kts、Deps.kt Modules、各模块 build.gradle.kts 的 namespace 和依赖引用、AndroidManifest.xml",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "create-doc",
+    "content": "创建架构文档并验证",
+    "activeForm": "创建架构文档并验证",
+    "description": "创建 ARCHITECTURE.md 说明新结构和依赖规则，更新 README.md，验证目录结构完整性",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  }
+]

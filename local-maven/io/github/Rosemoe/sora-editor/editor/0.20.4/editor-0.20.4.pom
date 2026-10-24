@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.github.Rosemoe.sora-editor</groupId>
+  <artifactId>editor</artifactId>
+  <version>0.20.4</version>
+  <packaging>aar</packaging>
+  <name>editor</name>
+  <description>An awesome code editor library on Android</description>
+  <url>https://github.com/Rosemoe/sora-editor</url>
+  <inceptionYear>2020</inceptionYear>
+  <licenses>
+    <license>
+      <name>LGPL v2.1</name>
+      <url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>Rose Moe</id>
+      <name>Rosemoe</name>
+      <email>2073412493@qq.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:github.com/Rosemoe/sora-editor.git</connection>
+    <developerConnection>scm:git:ssh://github.com/Rosemoe/sora-editor.git</developerConnection>
+    <url>https://github.com/Rosemoe/sora-editor/tree/master</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>androidx.annotation</groupId>
+      <artifactId>annotation</artifactId>
+      <version>1.5.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>1.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoJs Pro</string>
+    <string name="accessibility_service_description">AutoJs Pro 自动化服务，提供 UI 自动化、控件操作和手势注入功能。</string>
+
+    <!-- Navigation -->
+    <string name="nav_scripts">脚本</string>
+    <string name="nav_editor">编辑器</string>
+    <string name="nav_log">日志</string>
+    <string name="nav_settings">设置</string>
+
+    <!-- Script -->
+    <string name="new_script">新建脚本</string>
+    <string name="run_script">运行</string>
+    <string name="edit_script">编辑</string>
+    <string name="delete_script">删除</string>
+    <string name="save_script">保存</string>
+    <string name="import_script">导入</string>
+    <string name="export_script">导出</string>
+
+    <!-- Settings -->
+    <string name="settings_accessibility">无障碍服务</string>
+    <string name="settings_accessibility_summary">开启无障碍服务以启用 UI 自动化</string>
+    <string name="settings_overlay">悬浮窗权限</string>
+    <string name="settings_overlay_summary">允许显示悬浮窗</string>
+    <string name="settings_capture">截图权限</string>
+    <string name="settings_capture_summary">允许截取屏幕</string>
+    <string name="settings_keep_alive">保活</string>
+    <string name="settings_keep_alive_summary">前台服务保活</string>
+    <string name="settings_volume_stop">音量键停止</string>
+    <string name="settings_volume_stop_summary">按音量下键停止所有脚本</string>
+    <string name="settings_theme">主题</string>
+    <string name="settings_about">关于</string>
+
+    <!-- Engine -->
+    <string name="engine_running">引擎运行中</string>
+    <string name="engine_idle">引擎空闲</string>
+    <string name="stop_all">停止全部</string>
+</resources>

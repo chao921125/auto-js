@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#1976D2</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="accent">#FF6F00</color>
+    <color name="background">#FAFAFA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#D32F2F</color>
+
+    <color name="script_name_color">#212121</color>
+    <color name="script_info_color">#757575</color>
+    <color name="log_background">#1E1E1E</color>
+    <color name="log_text">#E0E0E0</color>
+    <color name="log_error">#F44336</color>
+    <color name="log_warn">#FFC107</color>
+    <color name="log_info">#4FC3F7</color>
+
+    <color name="editor_background">#FFFFFF</color>
+    <color name="editor_keyword">#00897B</color>
+    <color name="editor_string">#E65100</color>
+    <color name="editor_comment">#9E9E9E</color>
+    <color name="editor_number">#6A1B9A</color>
+</resources>

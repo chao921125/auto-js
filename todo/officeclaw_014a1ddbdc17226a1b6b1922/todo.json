@@ -1,0 +1,69 @@
+
+[
+  {
+    "id": "scaffold",
+    "content": "项目脚手架：Gradle 多模块配置",
+    "activeForm": "搭建 Gradle 多模块项目结构",
+    "description": "settings.gradle.kts, root build.gradle.kts, gradle.properties, buildSrc, 各模块 build.gradle.kts",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "core-runtime",
+    "content": "core-runtime：脚本引擎与运行时",
+    "activeForm": "实现脚本引擎核心",
+    "description": "ScriptRuntime, RhinoEngine, ScriptThread, EventLoop, ModuleLoader, Sandbox, ApiRegistry",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "libs",
+    "content": "能力层模块：accessibility/vision/floaty/net/io/device/shell",
+    "activeForm": "实现各能力层模块",
+    "description": "无障碍引擎、视觉引擎、悬浮窗、网络、文件、设备、Shell 的 Kotlin 实现",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "app-ui",
+    "content": "app 主应用：UI + 编辑器 + 脚本管理",
+    "activeForm": "实现主应用界面与编辑器",
+    "description": "MainActivity, 脚本列表, 代码编辑器, 日志面板, EngineService, 设置页",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "scheduler-packager",
+    "content": "scheduler + packager 模块",
+    "activeForm": "实现调度与打包模块",
+    "description": "定时任务/触发器、APK 打包流水线/签名",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  },
+  {
+    "id": "scripts-docs",
+    "content": "示例脚本 + API 文档 + AndroidManifest",
+    "activeForm": "编写示例脚本和文档",
+    "description": "30+ 示例脚本, API 文档, 各模块 Manifest, 资源文件",
+    "status": "completed",
+    "depends_on": [],
+    "result_summary": null,
+    "meta_data": null,
+    "selected_model_id": null
+  }
+]

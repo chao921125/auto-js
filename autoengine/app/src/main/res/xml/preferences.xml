@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/settings_accessibility">
+        <SwitchPreference
+            android:key="accessibility_enabled"
+            android:title="@string/settings_accessibility"
+            android:summary="@string/settings_accessibility_summary"
+            android:defaultValue="false" />
+        <SwitchPreference
+            android:key="overlay_enabled"
+            android:title="@string/settings_overlay"
+            android:summary="@string/settings_overlay_summary"
+            android:defaultValue="false" />
+        <SwitchPreference
+            android:key="capture_enabled"
+            android:title="@string/settings_capture"
+            android:summary="@string/settings_capture_summary"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="引擎">
+        <SwitchPreference
+            android:key="keep_alive"
+            android:title="@string/settings_keep_alive"
+            android:summary="@string/settings_keep_alive_summary"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:key="volume_stop"
+            android:title="@string/settings_volume_stop"
+            android:summary="@string/settings_volume_stop_summary"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="关于">
+        <Preference
+            android:key="about"
+            android:title="@string/settings_about"
+            android:summary="AutoJs Pro v1.0.0" />
+    </PreferenceCategory>
+</PreferenceScreen>
